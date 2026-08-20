@@ -111,7 +111,8 @@ export function SoundProvider({ children }: { children: ReactNode }) {
       const c = ctxRef.current;
       if (!c) return;
       const now = c.currentTime;
-      const f = SCALE[Math.floor(Math.random() * SCALE.length)] * (Math.random() < 0.3 ? 0.5 : 1);
+      const base = SCALE[Math.floor(Math.random() * SCALE.length)] ?? 392;
+      const f = base * (Math.random() < 0.3 ? 0.5 : 1);
       const osc = c.createOscillator();
       const g = c.createGain();
       const filter = c.createBiquadFilter();

@@ -77,19 +77,29 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Hitendra S — Software Engineer" },
+      {
+        name: "description",
+        content:
+          "Hitendra S is a software engineer building fast, considered product interfaces and developer tooling.",
+      },
+      { name: "author", content: "Hitendra S" },
+      { property: "og:title", content: "Hitendra S — Software Engineer" },
+      {
+        property: "og:description",
+        content:
+          "Hitendra S is a software engineer building fast, considered product interfaces and developer tooling.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: appCss,
+        href: "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
@@ -116,11 +126,18 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <SoundProvider>
+        <AnimatePresence mode="wait" initial={false}>
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <div key={pathname}>
+            <Outlet />
+          </div>
+        </AnimatePresence>
+      </SoundProvider>
     </QueryClientProvider>
   );
 }

@@ -46,6 +46,7 @@ function Index() {
   const [hoveredNote, setHoveredNote] = useState<string | null>(null);
   const [showCraft, setShowCraft] = useState(false);
   const [showWork, setShowWork] = useState(false);
+  const [showThoughts, setShowThoughts] = useState(false);
 
   return (
     <PageShell>
@@ -167,7 +168,7 @@ function Index() {
           <SectionTitle>Thoughts</SectionTitle>
         </RevealOnScroll>
         <div className="w-full grid grid-cols-1 gap-x-5 gap-y-0">
-          {notes.map((n, i) => (
+          {(showThoughts ? notes : notes.slice(0, 4)).map((n, i) => (
             <RevealOnScroll key={n.slug} delay={i * 0.05}>
               <SiteLink
                 to="/thoughts/$slug"
@@ -204,12 +205,12 @@ function Index() {
         <RevealOnScroll delay={0.1}>
           <div className="w-full flex justify-end">
             <div className="h-[30px]">
-              <SiteLink
-                to="/thoughts"
+              <button
+                onClick={() => { play("click"); setShowThoughts((s) => !s); }}
                 className="text-[10px] uppercase leading-[10px] font-semibold text-black/50 dark:text-white/50 cursor-pointer hover:text-black/80 dark:hover:text-white/80 transition-colors duration-200 h-full"
               >
-                View all
-              </SiteLink>
+                {showThoughts ? "Show less" : "View all"}
+              </button>
             </div>
           </div>
         </RevealOnScroll>

@@ -133,56 +133,74 @@ export type Note = {
   title: string;
   date: string;
   read: string;
+  mediumUrl?: string;
   body: string[];
 };
 
 export const notes: Note[] = [
   {
+    slug: "basic-pentesting-1",
+    title: "Basic Pentesting - 1 Walkthrough (VulnHub)",
+    date: "Feb 2024",
+    read: "6 min read",
+    mediumUrl: "https://medium.com/@shitendra-3/basic-pentesting-1-walkthrough-vulnhub-4fa0536df139",
+    body: [
+      "## Overview",
+      "A complete step-by-step penetration testing walkthrough on the Basic Pentesting: 1 VulnHub machine created by Josiah Pierce. This lab covers remote service scanning, WordPress vulnerability enumeration, Metasploit exploitation, and privilege escalation via writable file permissions.",
+      "## Reconnaissance & Service Discovery",
+      "We started by scanning the target host (10.0.2.4) using Nmap: `nmap -A -sV -P -T4 10.0.2.4`. The scan revealed three open ports: FTP (ProFTPD 1.3.3c on port 21), SSH (OpenSSH 7.2p2 on port 22), and HTTP (Apache httpd 2.4.18 on port 80). Directory enumeration with dirb uncovered a hidden path `/secret/` leading to a WordPress site.",
+      "## WordPress Exploitation & Shell Access",
+      "Using wpscan, we enumerated the site users and identified the default 'admin' account. Navigating to the wp-login.php panel and testing default credentials granted immediate admin access. From there, we launched Metasploit's `wp_admin_shell_upload` module to upload a payload and trigger a reverse Meterpreter shell as the www-data user.",
+      "## Privilege Escalation to Root",
+      "After spawning an interactive TTY bash shell with `python -c 'import pty;pty.spawn(\"/bin/bash\")'`, we inspected system permissions and discovered that `/etc/passwd` had world read-write permissions. We downloaded `/etc/passwd`, generated an encrypted password hash using `openssl passwd -1 hello`, replaced the root password hash in the local file, and uploaded it back to the target. Authenticating with `su root` gave us full root privilege access!",
+    ],
+  },
+  {
     slug: "llm-reliability",
     title: "Designing for LLM Reliability in Production",
     date: "Aug 2026",
-    read: "7 min read",
+    read: "3 min read",
     body: [
-      "## Phase 1: RAG Context Challenges",
-      "RAG is easy to prototype but hard to productionize. In medical and legal applications, a simple similarity search on vector embeddings is rarely enough.",
-      "## Phase 2: Context Filtering & Schema Control",
-      "By adding a Cross-Encoder reranker behind the initial vector search, we filter out high-similarity noise and feed the LLM only the high-relevance chunks. This, combined with strict JSON schema parsing, turns generative text into deterministic system inputs.",
+      "## Naive RAG vs Production Pipelines",
+      "Naive RAG works great in local demos but breaks in production when domain accuracy matters. Vector similarity measures semantic orientation, not factual correctness—a query about pediatric dosage can easily retrieve adult dosage chunks if not properly filtered.",
+      "## Hybrid Search & Schema Control",
+      "In MediBot, we combine dense vector embeddings with sparse BM25 keyword search, reranking results through a Cross-Encoder to eliminate noise. We enforce strict Pydantic JSON schemas on model responses so every output is deterministic and fully verifiable.",
     ],
   },
   {
     slug: "realtime-synced-canvas",
     title: "Under the Hood of a Real-Time Synced Canvas",
     date: "May 2026",
-    read: "5 min read",
+    read: "3 min read",
     body: [
-      "## Phase 1: Coordinate Sync Protocol",
-      "Synchronizing drawing strokes across viewports requires more than just piping mouse coordinates through a WebSocket.",
-      "## Phase 2: Interpolation & Rendering Jitter",
-      "Without coordinate normalization (mapping all drawing points to a normalized coordinate box), a stroke drawn on a 4K monitor appears off-canvas on a mobile screen. Add in bezier interpolation for stroke smoothing, and you get a buttery fluid drawing feel even at high packet latency.",
+      "## Viewport-Independent Coordinate Normalization",
+      "Building a collaborative canvas like Sketch.io requires normalizing drawing points between 0 and 1 relative to viewport dimensions so a stroke drawn on a 4K display renders identically on mobile screens.",
+      "## Delta Encoding & Bezier Smoothing",
+      "Instead of piping full stroke arrays over WebSockets at 60 FPS, we send compact binary deltas every 20ms. The renderer applies quadratic Bezier curve interpolation to anchor points, producing fluid, buttery smooth brush strokes under 50ms latency.",
     ],
   },
   {
     slug: "zerotrust-backend",
     title: "Vulnerability Assessments for Backend Engineers",
     date: "Feb 2026",
-    read: "6 min read",
+    read: "3 min read",
     body: [
-      "## Phase 1: Scanning Attack Surfaces",
-      "Backend developers often treat security as a post-deployment checklist. The best way to build secure APIs is to think like the scanner.",
-      "## Phase 2: Sanitization & Boundaries",
-      "Understanding how automated exploit tools exploit input fields, route variables, and state variables makes you write better middleware. Input validation isn't just about parsing; it's about checking boundaries.",
+      "## Thinking Like the Exploit Scanner",
+      "Security shouldn't be a pre-launch checklist. Automated vulnerability scanners probe input boundaries, test state transitions, and exploit un-sanitized parameters with cold efficiency.",
+      "## Enforcing Zero-Trust Boundaries",
+      "Every API entry point and internal service boundary must enforce strict length limits, input sanitization, and cryptographically verified JWT tokens so compromised endpoints can't escalate privileges across microservices.",
     ],
   },
   {
     slug: "fastapi-maintainability",
     title: "FastAPI: Speed vs. Maintainability at Scale",
     date: "Oct 2025",
-    read: "4 min read",
+    read: "2 min read",
     body: [
-      "## Phase 1: Injection Architecture",
-      "FastAPI's greatest feature is its dependency injection system, but it's also where codebase layout can fail.",
-      "## Phase 2: Layout Maintainability",
-      "Structuring routers, services, and schemas into clean independent modules keeps a Python backend maintainable as it grows from a few basic routes to a full enterprise application.",
+      "## Dependency Injection & Domain Isolation",
+      "FastAPI's built-in Depends system keeps endpoints clean by decoupling database session lifecycles and authentication logic from router handlers.",
+      "## Pydantic Schemas & Async I/O",
+      "Separating request DTOs from database models prevents unintentional ORM side effects. Paired with native async database drivers (asyncpg/SQLAlchemy 2.0), API endpoints maintain high concurrency without blocking the asyncio loop.",
     ],
   },
 ];

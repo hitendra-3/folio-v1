@@ -28,7 +28,7 @@ export function Header() {
     >
       {isHome ? (
         <div className="flex items-center gap-3">
-          <div className="rounded-full w-12 h-12 overflow-hidden bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/10 flex items-center justify-center shrink-0">
+          <div className="rounded-full w-12 h-12 overflow-hidden bg-white dark:bg-white border border-black/10 dark:border-white/20 flex items-center justify-center shrink-0">
             <motion.img
               src={profile}
               alt="Portrait of Hitendra S"

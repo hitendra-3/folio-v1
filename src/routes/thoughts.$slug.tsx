@@ -48,9 +48,19 @@ function ThoughtDetail() {
             </h1>
           </Reveal>
           <Reveal delay={0.16}>
-            <p className="text-xs text-muted-foreground">
-              {note.date} &bull; {note.read}
-            </p>
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <span>{note.date} &bull; {note.read}</span>
+              {note.mediumUrl && (
+                <a
+                  href={note.mediumUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-black dark:text-white transition-colors duration-150"
+                >
+                  Read on Medium ↗
+                </a>
+              )}
+            </div>
           </Reveal>
         </header>
 

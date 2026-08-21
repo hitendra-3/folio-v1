@@ -26,10 +26,10 @@ type SoundApi = {
 const SoundContext = createContext<SoundApi | null>(null);
 
 const CUES: Record<Cue, { freq: number; dur: number; gain: number; type: OscillatorType }> = {
-  hover: { freq: 1180, dur: 0.05, gain: 0.025, type: "sine" },
-  click: { freq: 660, dur: 0.08, gain: 0.05, type: "triangle" },
-  nav: { freq: 440, dur: 0.18, gain: 0.035, type: "sine" },
-  toggle: { freq: 880, dur: 0.1, gain: 0.04, type: "square" },
+  hover: { freq: 1180, dur: 0.05, gain: 0.08, type: "sine" },
+  click: { freq: 660, dur: 0.08, gain: 0.14, type: "triangle" },
+  nav: { freq: 440, dur: 0.18, gain: 0.10, type: "sine" },
+  toggle: { freq: 880, dur: 0.1, gain: 0.12, type: "square" },
 };
 
 export function SoundProvider({ children }: { children: ReactNode }) {
@@ -61,7 +61,7 @@ export function SoundProvider({ children }: { children: ReactNode }) {
     if (!bgMusicRef.current) {
       const audio = new Audio(bgJazzUrl);
       audio.loop = true;
-      audio.volume = 0.10; // Slightly increased ambient jazz volume
+      audio.volume = 0.50; // Slightly increased ambient jazz volume
       bgMusicRef.current = audio;
     }
     return bgMusicRef.current;
@@ -71,7 +71,7 @@ export function SoundProvider({ children }: { children: ReactNode }) {
     if (!enabled) return;
     try {
       const audio = new Audio(magicSweepUrl);
-      audio.volume = 0.14; // Slightly increased theme sweep volume
+      audio.volume = 0.45; // Slightly increased theme sweep volume
       audio.play().catch(() => { });
     } catch { }
   }, [enabled]);
@@ -178,7 +178,7 @@ export function SoundProvider({ children }: { children: ReactNode }) {
   const startMusic = useCallback(() => {
     const audio = getBgMusic();
     if (audio) {
-      audio.volume = 0.10; // Slightly increased ambient jazz volume
+      audio.volume = 0.25; // Slightly increased ambient jazz volume
       audio
         .play()
         .then(() => {

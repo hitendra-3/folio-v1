@@ -1,11 +1,12 @@
 import { AnimatePresence, motion } from "motion/react";
 import { Volume2, VolumeX, Pause, Play, Sun, Moon } from "lucide-react";
 import { useSound } from "@/lib/sound";
-import { useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 
 export function SoundControls() {
   const { enabled, setEnabled, play, musicPlaying, toggleMusic } = useSound();
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const themeBtnRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("theme");
@@ -21,6 +22,25 @@ export function SoundControls() {
   const toggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
     const nextTheme = theme === "light" ? "dark" : "light";
     
+    // Top-right theme button fallback coordinates
+    const defaultX = window.innerWidth - 36;
+    const defaultY = 28;
+
+    // Get exact button center from ref or target
+    const btn = themeBtnRef.current || (e.currentTarget as HTMLButtonElement);
+    const rect = btn?.getBoundingClientRect ? btn.getBoundingClientRect() : null;
+
+    let x = defaultX;
+    let y = defaultY;
+
+    if (rect && rect.width > 0 && rect.height > 0 && rect.left > 0 && rect.top >= 0) {
+      x = rect.left + rect.width / 2;
+      y = rect.top + rect.height / 2;
+    } else if (e.clientX && e.clientY && e.clientX > 0 && e.clientY > 0) {
+      x = e.clientX;
+      y = e.clientY;
+    }
+
     const updateTheme = () => {
       setTheme(nextTheme);
       if (nextTheme === "dark") {
@@ -38,9 +58,6 @@ export function SoundControls() {
       return;
     }
 
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
     const endRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y)
@@ -57,8 +74,8 @@ export function SoundControls() {
           ],
         },
         {
-          duration: 250,
-          easing: "cubic-bezier(0.2, 0, 0, 1)",
+          duration: 650, // Victor Williams style smooth 650ms transition
+          easing: "cubic-bezier(0.4, 0, 0.2, 1)",
           pseudoElement: "::view-transition-new(root)",
         }
       );
@@ -123,6 +140,7 @@ export function SoundControls() {
       </AnimatePresence>
 
       <button
+        ref={themeBtnRef}
         type="button"
         aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
         onClick={toggleTheme}

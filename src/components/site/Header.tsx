@@ -1,53 +1,78 @@
 import { motion } from "motion/react";
-import avatar from "@/assets/avatar.jpg";
+import { useLocation } from "@tanstack/react-router";
+import { Home, CornerUpLeft } from "lucide-react";
+import profile from "@/assets/profile.jpg";
 import { SoundControls } from "./SoundControls";
 import { SiteLink } from "./SiteLink";
 
-const nav = [
-  { to: "/work", label: "Work" },
-  { to: "/thoughts", label: "Thoughts" },
-  { to: "/craft", label: "Craft" },
-] as const;
-
 export function Header() {
+  const { pathname } = useLocation();
+  const isHome = pathname === "/";
+
+  // Calculate dynamic back route based on path hierarchy
+  const getBackPath = (path: string): string => {
+    if (path.startsWith("/work/")) return "/work";
+    if (path.startsWith("/thoughts/")) return "/thoughts";
+    if (path.startsWith("/craft/")) return "/craft";
+    return "/";
+  };
+
+  const backPath = getBackPath(pathname);
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="flex items-start justify-between gap-4"
+      className="flex items-center justify-between w-full py-2"
     >
-      <SiteLink to="/" className="group flex items-center gap-3">
-        <motion.img
-          src={avatar}
-          alt="Portrait of Hitendra S"
-          width={512}
-          height={512}
-          className="size-11 rounded-full object-cover ring-1 ring-border"
-          whileHover={{ scale: 1.06, rotate: -2 }}
-          transition={{ type: "spring", stiffness: 400, damping: 18 }}
-        />
-        <span className="leading-tight">
-          <span className="display block text-xl">Hitendra S</span>
-          <span className="block text-sm text-muted-foreground">Software Engineer</span>
-        </span>
-      </SiteLink>
+      {isHome ? (
+        <div className="flex items-center gap-3">
+          <div className="rounded-full w-12 h-12 overflow-hidden bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/10 flex items-center justify-center shrink-0">
+            <motion.img
+              src={profile}
+              alt="Portrait of Hitendra S"
+              width={160}
+              height={160}
+              className="w-full h-full object-cover rounded-full"
+              style={{ imageRendering: "auto" }}
+              whileHover={{ scale: 1.06 }}
+              transition={{ type: "spring", stiffness: 400, damping: 18 }}
+            />
+          </div>
+          <div className="flex flex-col">
+            <h1 className="font-display font-medium text-xl italic leading-none text-black dark:text-white">
+              Hitendra S
+            </h1>
+            <span className="text-sm text-black/70 dark:text-white/70 font-medium font-sans mt-0.5">
+              Software Engineer
+            </span>
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center gap-0.5 p-0.5 bg-black/5 dark:bg-white/10 rounded-full h-[32px]">
+          {/* Home Button */}
+          <SiteLink
+            to="/"
+            className="w-7 h-7 bg-transparent hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-200 rounded-full flex items-center justify-center text-black/75 dark:text-white/80 cursor-default outline-none"
+            aria-label="Home page"
+          >
+            <Home className="size-[13px] -mt-px" />
+          </SiteLink>
+          {/* Divider Line inside the pill */}
+          <div className="w-[1px] h-[14px] bg-black/10 dark:bg-white/10" />
+          {/* Back Button */}
+          <SiteLink
+            to={backPath as "/"}
+            className="w-7 h-7 bg-transparent hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-200 rounded-full flex items-center justify-center text-black/75 dark:text-white/80 cursor-default outline-none"
+            aria-label="Go back"
+          >
+            <CornerUpLeft className="size-[13px]" />
+          </SiteLink>
+        </div>
+      )}
 
-      <div className="flex items-center gap-2">
-        <nav className="hidden items-center gap-1 sm:flex">
-          {nav.map((item) => (
-            <SiteLink
-              key={item.to}
-              to={item.to}
-              className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
-              activeProps={{ className: "bg-surface text-foreground" }}
-            >
-              {item.label}
-            </SiteLink>
-          ))}
-        </nav>
-        <SoundControls />
-      </div>
+      <SoundControls />
     </motion.header>
   );
 }

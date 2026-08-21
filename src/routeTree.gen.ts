@@ -10,33 +10,115 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CraftIndexRouteImport } from './routes/craft.index'
+import { Route as CraftSlugRouteImport } from './routes/craft.$slug'
+import { Route as ThoughtsIndexRouteImport } from './routes/thoughts.index'
+import { Route as ThoughtsSlugRouteImport } from './routes/thoughts.$slug'
+import { Route as WorkIndexRouteImport } from './routes/work.index'
+import { Route as WorkSlugRouteImport } from './routes/work.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CraftIndexRoute = CraftIndexRouteImport.update({
+  id: '/craft/',
+  path: '/craft/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CraftSlugRoute = CraftSlugRouteImport.update({
+  id: '/craft/$slug',
+  path: '/craft/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ThoughtsIndexRoute = ThoughtsIndexRouteImport.update({
+  id: '/thoughts/',
+  path: '/thoughts/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ThoughtsSlugRoute = ThoughtsSlugRouteImport.update({
+  id: '/thoughts/$slug',
+  path: '/thoughts/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkIndexRoute = WorkIndexRouteImport.update({
+  id: '/work/',
+  path: '/work/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkSlugRoute = WorkSlugRouteImport.update({
+  id: '/work/$slug',
+  path: '/work/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/craft/$slug': typeof CraftSlugRoute
+  '/thoughts/$slug': typeof ThoughtsSlugRoute
+  '/work/$slug': typeof WorkSlugRoute
+  '/craft/': typeof CraftIndexRoute
+  '/thoughts/': typeof ThoughtsIndexRoute
+  '/work/': typeof WorkIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/craft/$slug': typeof CraftSlugRoute
+  '/thoughts/$slug': typeof ThoughtsSlugRoute
+  '/work/$slug': typeof WorkSlugRoute
+  '/craft': typeof CraftIndexRoute
+  '/thoughts': typeof ThoughtsIndexRoute
+  '/work': typeof WorkIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/craft/$slug': typeof CraftSlugRoute
+  '/thoughts/$slug': typeof ThoughtsSlugRoute
+  '/work/$slug': typeof WorkSlugRoute
+  '/craft/': typeof CraftIndexRoute
+  '/thoughts/': typeof ThoughtsIndexRoute
+  '/work/': typeof WorkIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/craft/$slug'
+    | '/thoughts/$slug'
+    | '/work/$slug'
+    | '/craft/'
+    | '/thoughts/'
+    | '/work/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/craft/$slug'
+    | '/thoughts/$slug'
+    | '/work/$slug'
+    | '/craft'
+    | '/thoughts'
+    | '/work'
+  id:
+    | '__root__'
+    | '/'
+    | '/craft/$slug'
+    | '/thoughts/$slug'
+    | '/work/$slug'
+    | '/craft/'
+    | '/thoughts/'
+    | '/work/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CraftSlugRoute: typeof CraftSlugRoute
+  ThoughtsSlugRoute: typeof ThoughtsSlugRoute
+  WorkSlugRoute: typeof WorkSlugRoute
+  CraftIndexRoute: typeof CraftIndexRoute
+  ThoughtsIndexRoute: typeof ThoughtsIndexRoute
+  WorkIndexRoute: typeof WorkIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +130,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/craft/': {
+      id: '/craft/'
+      path: '/craft'
+      fullPath: '/craft/'
+      preLoaderRoute: typeof CraftIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/craft/$slug': {
+      id: '/craft/$slug'
+      path: '/craft/$slug'
+      fullPath: '/craft/$slug'
+      preLoaderRoute: typeof CraftSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/thoughts/': {
+      id: '/thoughts/'
+      path: '/thoughts'
+      fullPath: '/thoughts/'
+      preLoaderRoute: typeof ThoughtsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/thoughts/$slug': {
+      id: '/thoughts/$slug'
+      path: '/thoughts/$slug'
+      fullPath: '/thoughts/$slug'
+      preLoaderRoute: typeof ThoughtsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/work/': {
+      id: '/work/'
+      path: '/work'
+      fullPath: '/work/'
+      preLoaderRoute: typeof WorkIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/work/$slug': {
+      id: '/work/$slug'
+      path: '/work/$slug'
+      fullPath: '/work/$slug'
+      preLoaderRoute: typeof WorkSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CraftSlugRoute: CraftSlugRoute,
+  ThoughtsSlugRoute: ThoughtsSlugRoute,
+  WorkSlugRoute: WorkSlugRoute,
+  CraftIndexRoute: CraftIndexRoute,
+  ThoughtsIndexRoute: ThoughtsIndexRoute,
+  WorkIndexRoute: WorkIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

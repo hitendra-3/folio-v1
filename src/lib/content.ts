@@ -2,6 +2,14 @@ import work1 from "@/assets/work-1.jpg";
 import work2 from "@/assets/work-2.jpg";
 import work3 from "@/assets/work-3.jpg";
 import work4 from "@/assets/work-4.jpg";
+import work5 from "@/assets/flux.jpg";
+import work6 from "@/assets/checkout.png";
+
+import craft1 from "@/assets/craft-1.jpg";
+import craft2 from "@/assets/craft-2.jpg";
+import craft3 from "@/assets/craft-3.jpg";
+import craft4 from "@/assets/craft-4.jpg";
+import craft5 from "@/assets/craft-5.jpg";
 
 export type Project = {
   slug: string;
@@ -13,71 +21,109 @@ export type Project = {
   role: string;
   stack: string[];
   body: string[];
+  githubUrl?: string;
+  demoUrl?: string;
 };
 
 export const projects: Project[] = [
   {
-    slug: "atlas-metrics",
-    title: "Atlas",
-    kind: "Analytics Platform",
+    slug: "medibot",
+    title: "MediBot",
+    kind: "Medical RAG Architecture",
     year: "2026",
     cover: work1,
     summary:
-      "A product analytics surface that turns raw event streams into a calm, readable picture of how a product is actually used.",
-    role: "Lead engineer",
-    stack: ["TypeScript", "React", "ClickHouse", "Go"],
+      "A domain-specific Medical RAG system that extends the standard RAG pipeline with document filtering, privacy protection, multi-stage retrieval, and hallucination prevention.",
+    role: "Architect & Lead Developer",
+    stack: ["Python", "FastAPI", "Pinecone", "Hugging Face", "Gemini API"],
+    githubUrl: "https://github.com/hitendra-3/medicalAssistant",
     body: [
-      "Atlas started as an internal tool for a team drowning in dashboards nobody trusted. The brief was blunt: fewer charts, more answers.",
-      "I designed the query layer around pre-aggregated rollups so the median dashboard load dropped from 4.1s to under 300ms, then rebuilt the front end around a single composable chart primitive instead of a dozen bespoke widgets.",
-      "The most satisfying part was the empty state work — teaching the product to explain itself before any data exists.",
+      "## Phase 1: Ingestion Pipeline",
+      "MediBot is a domain-specific Medical RAG system. It allows users to upload medical PDFs and query clinical content in natural language.",
+      "The Ingestion Pipeline runs once when a document is uploaded. It filters non-medical uploads using zero-shot classification, scrubs PII, segments text into overlapping chunks, and stores dense vector embeddings inside Pinecone.",
+      "## Phase 2: Inference Pipeline",
+      "The Inference Pipeline triggers every time a question is asked. Instead of querying the LLM directly, we find relevant document data first.",
+      "The system transforms user queries, performs a hybrid dense-sparse search, and reranks retrieval results using a Cross-Encoder. The LLM (Gemini) generates responses backed strictly by this retrieved context to prevent hallucination.",
     ],
   },
   {
-    slug: "kernel-cli",
-    title: "Kernel",
-    kind: "Developer Tooling",
+    slug: "sketch-io",
+    title: "Sketch.io",
+    kind: "Collaborative Whiteboard",
     year: "2025",
     cover: work2,
     summary:
-      "A local-first CLI and daemon that keeps distributed dev environments reproducible without a container tax.",
-    role: "Systems engineer",
-    stack: ["Rust", "gRPC", "Nix"],
+      "A low-latency collaborative whiteboard synchronizing drawing strokes, cursor coordinates, and active room states across clients in real-time.",
+    role: "Full-Stack Engineer",
+    stack: ["Node.js", "Express", "React", "WebSockets", "HTML5 Canvas"],
+    githubUrl: "https://github.com/hitendra-3/Sketch.io",
     body: [
-      "Kernel replaced a fragile pile of shell scripts with one binary that snapshots dependency graphs and restores them deterministically.",
-      "I wrote the diffing engine and the incremental restore path, which cut cold environment setup from twenty minutes to about ninety seconds.",
-      "Ergonomics mattered more than features here: every command had to be guessable, and every failure had to say what to do next.",
+      "## Phase 1: Real-time Drawing Sync",
+      "Sketch.io is a collaborative canvas designed for real-time stroke and cursor synchronization with a latency threshold of sub-50ms.",
+      "## Phase 2: WebSocket Gateway",
+      "The system is built on a Node.js and Express backend, routing updates through WebSockets. To support drawing across different client screens, it normalizes coordinates and interpolates lines for smooth paths.",
+      "## Phase 3: Presence & Storage Cache",
+      "The layout runs on Redis for active user presence and express pub/sub coordination, coupled with PostgreSQL for persistent room state backup, ensuring safe room recovery on reconnect.",
     ],
   },
   {
-    slug: "cadence",
-    title: "Cadence",
-    kind: "Audio Web App",
+    slug: "qa-test-generator",
+    title: "AI-Powered QA Generator",
+    kind: "QA Automation Platform",
     year: "2025",
     cover: work3,
     summary:
-      "A browser music player built on the Web Audio API, with gapless playback and a waveform scrubber that feels physical.",
-    role: "Solo build",
-    stack: ["Web Audio API", "React", "Canvas"],
+      "A FastAPI backend that parses versioned Markdown manuals into tree structures, generates structured QA test cases with Gemini, and tracks staleness via content hashes.",
+    role: "Backend & Systems Engineer",
+    stack: ["FastAPI", "SQLite", "MongoDB Atlas", "Gemini 2.5 Flash", "Pydantic"],
+    githubUrl: "https://github.com/hitendra-3/TRI9T",
     body: [
-      "Cadence is where the sound design on this site came from. I wanted to understand how much expressiveness you can get out of an oscillator and a gain node.",
-      "Waveforms are decoded off the main thread and painted to canvas at device pixel ratio, so scrubbing stays at 60fps on a five-year-old laptop.",
-      "Every control has a tuned interaction sound — quiet enough to notice only once.",
+      "## Phase 1: Markdown Parsing",
+      "The AI-Powered QA Generator ingests manual updates line-by-line. A stack-based parser builds a hierarchical parent-child tree from markdown headers, storing structure inside SQLite.",
+      "## Phase 2: AI Test Generation",
+      "Using Google Gemini 2.5 Flash, the system acts as a QA Engineer to generate structured test cases (Title, Preconditions, Steps, Expected Results, Priority). Generated outputs are stored in MongoDB Atlas.",
+      "## Phase 3: Staleness Detection",
+      "Revision changes are detected using SHA-256 content hashes. During retrieval, we compare SQLite node hashes with MongoDB records to automatically tag test cases as Fresh or Stale.",
     ],
   },
   {
-    slug: "ledger-docs",
-    title: "Ledger",
-    kind: "Documentation System",
-    year: "2024",
-    cover: work4,
+    slug: "fluxchat",
+    title: "FluxChat Architecture",
+    kind: "High-Performance Realtime App",
+    year: "2026",
+    cover: work5,
     summary:
-      "A typography-first documentation platform with versioned content, instant search, and generated API references.",
-    role: "Frontend engineer",
-    stack: ["MDX", "TypeScript", "Algolia"],
+      "A high-performance communication ecosystem engineered as a study in stateful in-memory backend management and Prism-Light minimalist design psychology.",
+    role: "Sole Architect & Designer",
+    stack: ["Node.js", "Socket.io", "Next.js 14", "Tailwind CSS", "Supabase", "PostgreSQL"],
+    githubUrl: "https://github.com/hitendra-3/FluxChat",
     body: [
-      "Ledger treats docs as a product surface, not an afterthought. The reading column, line length, and vertical rhythm were set before a single component was written.",
-      "I built the content pipeline that compiles MDX with typed frontmatter and a table of contents that tracks scroll position without jitter.",
-      "Search results render inline as you type, and the whole site ships under 90KB of JavaScript.",
+      "## Phase 1: Stateful In-Memory Memory Ecosystem",
+      "To eliminate database bottleneck latency on high-frequency messages, active chat sectors live entirely within high-speed RAM managed by Node.js and Socket.io WebSocket routers, achieving zero-latency data flow.",
+      "## Phase 2: Global Pulse Garbage Collection",
+      "Engineered an automated Global Pulse monitor: when connected socket population drops to zero, the server initiates a 60-second evaporation timer. If no client reconnects, the garbage collector purges memory maps safely to prevent memory leaks.",
+      "## Phase 3: Prism-Light UX Methodology",
+      "Designed a high-contrast executive aesthetic using pearl-glass blurs, 1px precision borders, and an 8px spatial grid, discarding noisy media attachments in favor of pure, high-signal typographic communication.",
+    ],
+  },
+  {
+    slug: "ai-checkout-recovery",
+    title: "AI Checkout Recovery Agent",
+    kind: "Agentic Commerce & AI",
+    year: "2026",
+    cover: work6,
+    summary:
+      "A proactive, minimal-intervention AI agent designed to rescue abandoned e-commerce carts by detecting user friction at the exact moment of checkout using Google Gemini 2.5 Flash.",
+    role: "Frontend & Integration Lead",
+    stack: ["React 18", "Vite", "Node.js", "Express", "Google Gemini 2.5 Flash", "Tailwind CSS"],
+    githubUrl: "https://github.com/hitendra-3/AI-Checkout-Recovery-Agent",
+    body: [
+      "## Phase 1: Real-Time Friction Monitoring",
+      "Abandoned carts exceed 70% in modern e-commerce due to static discounts and reactive email triggers. The agent monitors user intent in real-time, detecting price hesitation, shipping thresholds (e.g., ≤ ₹300 gap to free shipping), and idle states (>20s inactivity).",
+      "## Phase 2: Decision Matrix & Context Aggregator",
+      "The Node.js Express backend aggregates cart state, user browsing history, and active promotional policies into a structured payload for Google Gemini 2.5 Flash. The model evaluates strategy dynamically: offering targeted add-ons, clarifying return policies, or reinforcing product value.",
+      "## Phase 3: Robust Parsing & Voice Input",
+      "Includes a custom JSON Salvage Parser to rescue truncated AI responses and ensure 100% system stability. Integrated Web Speech API enables hands-free voice query dictation directly on the checkout canvas.",
     ],
   },
 ];
@@ -92,43 +138,51 @@ export type Note = {
 
 export const notes: Note[] = [
   {
-    slug: "sound-as-interface",
-    title: "Sound as an interface layer",
-    date: "Jul 2026",
-    read: "6 min read",
+    slug: "llm-reliability",
+    title: "Designing for LLM Reliability in Production",
+    date: "Aug 2026",
+    read: "7 min read",
     body: [
-      "Most interfaces are silent, and mostly that's correct. But silence is a default, not a decision — and defaults are worth interrogating.",
-      "A synthesized click at 660Hz costs nothing to ship, never buffers, and can be tuned per interaction. The trick is restraint: if the user notices the sound, it's too loud.",
+      "## Phase 1: RAG Context Challenges",
+      "RAG is easy to prototype but hard to productionize. In medical and legal applications, a simple similarity search on vector embeddings is rarely enough.",
+      "## Phase 2: Context Filtering & Schema Control",
+      "By adding a Cross-Encoder reranker behind the initial vector search, we filter out high-similarity noise and feed the LLM only the high-relevance chunks. This, combined with strict JSON schema parsing, turns generative text into deterministic system inputs.",
     ],
   },
   {
-    slug: "latency-is-a-design-material",
-    title: "Latency is a design material",
-    date: "Apr 2026",
-    read: "8 min read",
-    body: [
-      "You can't design your way out of a 3 second query, but you can design the wait so it doesn't feel like abandonment.",
-      "Optimistic state, skeleton geometry that matches the real layout, and honest progress are three cheap tools most teams skip.",
-    ],
-  },
-  {
-    slug: "small-primitives",
-    title: "Ship small primitives, not big components",
-    date: "Dec 2025",
+    slug: "realtime-synced-canvas",
+    title: "Under the Hood of a Real-Time Synced Canvas",
+    date: "May 2026",
     read: "5 min read",
     body: [
-      "Every large component starts as a small one with a good API and ends as a config object with nineteen booleans.",
-      "The escape hatch is composition — expose the parts, let the product assemble them.",
+      "## Phase 1: Coordinate Sync Protocol",
+      "Synchronizing drawing strokes across viewports requires more than just piping mouse coordinates through a WebSocket.",
+      "## Phase 2: Interpolation & Rendering Jitter",
+      "Without coordinate normalization (mapping all drawing points to a normalized coordinate box), a stroke drawn on a 4K monitor appears off-canvas on a mobile screen. Add in bezier interpolation for stroke smoothing, and you get a buttery fluid drawing feel even at high packet latency.",
     ],
   },
   {
-    slug: "reading-the-stack-trace",
-    title: "Actually reading the stack trace",
-    date: "Sep 2025",
+    slug: "zerotrust-backend",
+    title: "Vulnerability Assessments for Backend Engineers",
+    date: "Feb 2026",
+    read: "6 min read",
+    body: [
+      "## Phase 1: Scanning Attack Surfaces",
+      "Backend developers often treat security as a post-deployment checklist. The best way to build secure APIs is to think like the scanner.",
+      "## Phase 2: Sanitization & Boundaries",
+      "Understanding how automated exploit tools exploit input fields, route variables, and state variables makes you write better middleware. Input validation isn't just about parsing; it's about checking boundaries.",
+    ],
+  },
+  {
+    slug: "fastapi-maintainability",
+    title: "FastAPI: Speed vs. Maintainability at Scale",
+    date: "Oct 2025",
     read: "4 min read",
     body: [
-      "The fastest debugging technique I know is embarrassingly simple: read the whole error, out loud, before touching anything.",
-      "Half the time the answer is on line three.",
+      "## Phase 1: Injection Architecture",
+      "FastAPI's greatest feature is its dependency injection system, but it's also where codebase layout can fail.",
+      "## Phase 2: Layout Maintainability",
+      "Structuring routers, services, and schemas into clean independent modules keeps a Python backend maintainable as it grows from a few basic routes to a full enterprise application.",
     ],
   },
 ];
@@ -138,33 +192,43 @@ export type CraftItem = {
   title: string;
   date: string;
   note: string;
+  cover: string;
 };
 
 export const craft: CraftItem[] = [
-  { slug: "spring-toggle", title: "Spring Toggle", date: "Jun 2026", note: "A switch with mass." },
   {
-    slug: "waveform-scrubber",
-    title: "Waveform Scrubber",
+    slug: "node-plucker",
+    title: "Node Plucker",
+    date: "Jun 2026",
+    note: "5-string kinetic harp with spring physics, glowing particles, and pentatonic synthesis.",
+    cover: craft1,
+  },
+  {
+    slug: "gravitational-vortex",
+    title: "Gravitational Particle Vortex",
+    date: "May 2026",
+    note: "An interactive N-body kinetic particle gravity simulation with orbital shockwaves, cursor singularity pull, and cosmic sub-bass resonance.",
+    cover: craft2,
+  },
+  {
+    slug: "acoustic-waveform",
+    title: "Acoustic Wave Matrix",
     date: "Mar 2026",
-    note: "Canvas scrubbing at 60fps.",
+    note: "Multi-channel frequency visualizer canvas with coordinate FM audio synthesis and visual wave distortion.",
+    cover: craft3,
   },
   {
-    slug: "magnetic-cursor",
-    title: "Magnetic Cursor",
+    slug: "kinetic-compass",
+    title: "Kinetic Compass Engine",
     date: "Jan 2026",
-    note: "Buttons that lean toward you.",
+    note: "A tactile magnetic 3D compass dial with cardinal orientation indicators, smooth inertia physics, and acoustic pitch ticks.",
+    cover: craft4,
   },
   {
-    slug: "elastic-tabs",
-    title: "Elastic Tabs",
+    slug: "pixel-rain",
+    title: "Pixel Rain",
     date: "Nov 2025",
-    note: "Shared-layout tab indicator.",
+    note: "Interactive matrix rain with cursor-directed column bursts, glitch trails, and ambient synth tones.",
+    cover: craft5,
   },
-  {
-    slug: "command-palette",
-    title: "Command Palette",
-    date: "Aug 2025",
-    note: "Fuzzy search, zero deps.",
-  },
-  { slug: "tooltip-rail", title: "Tooltip Rail", date: "May 2025", note: "One tooltip, many hosts." },
 ];

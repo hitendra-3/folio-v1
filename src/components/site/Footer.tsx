@@ -19,9 +19,33 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="mt-24 flex items-center justify-between border-t border-border pt-6 text-sm text-muted-foreground">
-      <span>© {new Date().getFullYear()} Hitendra S</span>
-      <span className="tabular-nums">{time ? `${time.toLowerCase()} • IST` : "IST"}</span>
+    <footer className="mt-24 flex items-center justify-between border-t border-black/10 dark:border-white/10 pt-6 text-[13px] text-black/50 dark:text-white/50 font-sans">
+      <div className="flex items-center gap-2">
+        <span className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200 cursor-default">
+          © {new Date().getFullYear()} Hitendra S
+        </span>
+        <span className="text-black/20 dark:text-white/20">•</span>
+        <span className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200 cursor-default">
+          build v1.2.0
+        </span>
+      </div>
+      <div className="flex items-center gap-1.5 tabular-nums">
+        {time ? (
+          <>
+            <span className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200 cursor-default">
+              {time.toLowerCase()}
+            </span>
+            <span className="text-black/20 dark:text-white/20">•</span>
+            <span className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200 cursor-default">
+              IST
+            </span>
+          </>
+        ) : (
+          <span className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200 cursor-default">
+            IST
+          </span>
+        )}
+      </div>
     </footer>
   );
 }

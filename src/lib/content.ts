@@ -1,22 +1,8 @@
-import work1 from "@/assets/work-1.jpg";
-import work2 from "@/assets/work-2.jpg";
-import work3 from "@/assets/work-3.jpg";
-import work4 from "@/assets/work-4.jpg";
-import work5 from "@/assets/flux.jpg";
-import work6 from "@/assets/checkout.png";
-
-import craft1 from "@/assets/craft-1.jpg";
-import craft2 from "@/assets/craft-2.jpg";
-import craft3 from "@/assets/craft-3.jpg";
-import craft4 from "@/assets/craft-4.jpg";
-import craft5 from "@/assets/craft-5.jpg";
-
 export type Project = {
   slug: string;
   title: string;
   kind: string;
   year: string;
-  cover: string;
   summary: string;
   role: string;
   stack: string[];
@@ -31,7 +17,6 @@ export const projects: Project[] = [
     title: "MediBot",
     kind: "Medical RAG Architecture",
     year: "2026",
-    cover: work1,
     summary:
       "A domain-specific Medical RAG system that extends the standard RAG pipeline with document filtering, privacy protection, multi-stage retrieval, and hallucination prevention.",
     role: "Architect & Lead Developer",
@@ -51,7 +36,6 @@ export const projects: Project[] = [
     title: "Sketch.io",
     kind: "Collaborative Whiteboard",
     year: "2025",
-    cover: work2,
     summary:
       "A low-latency collaborative whiteboard synchronizing drawing strokes, cursor coordinates, and active room states across clients in real-time.",
     role: "Full-Stack Engineer",
@@ -71,7 +55,6 @@ export const projects: Project[] = [
     title: "AI-Powered QA Generator",
     kind: "QA Automation Platform",
     year: "2025",
-    cover: work3,
     summary:
       "A FastAPI backend that parses versioned Markdown manuals into tree structures, generates structured QA test cases with Gemini, and tracks staleness via content hashes.",
     role: "Backend & Systems Engineer",
@@ -91,7 +74,6 @@ export const projects: Project[] = [
     title: "FluxChat Architecture",
     kind: "High-Performance Realtime App",
     year: "2026",
-    cover: work5,
     summary:
       "A high-performance communication ecosystem engineered as a study in stateful in-memory backend management and Prism-Light minimalist design psychology.",
     role: "Sole Architect & Designer",
@@ -111,7 +93,6 @@ export const projects: Project[] = [
     title: "AI Checkout Recovery Agent",
     kind: "Agentic Commerce & AI",
     year: "2026",
-    cover: work6,
     summary:
       "A proactive, minimal-intervention AI agent designed to rescue abandoned e-commerce carts by detecting user friction at the exact moment of checkout using Google Gemini 2.5 Flash.",
     role: "Frontend & Integration Lead",
@@ -179,7 +160,6 @@ export type CraftItem = {
   title: string;
   date: string;
   note: string;
-  cover: string;
 };
 
 export const craft: CraftItem[] = [
@@ -188,13 +168,11 @@ export const craft: CraftItem[] = [
     title: "Prism Light Weaver",
     date: "Aug 2026",
     note: "Interactive optical glass prism simulation with chromatic dispersion, spectral refraction, and crystal Web Audio synthesis.",
-    cover: craft1,
   },
   {
     slug: "gravitational-vortex",
     title: "Gravitational Particle Vortex",
     date: "May 2026",
     note: "An interactive N-body kinetic particle gravity simulation with orbital shockwaves, cursor singularity pull, and cosmic sub-bass resonance.",
-    cover: craft2,
   },
 ];

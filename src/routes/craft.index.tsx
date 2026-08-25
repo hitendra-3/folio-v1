@@ -35,7 +35,7 @@ function CraftIndex() {
       {/* Dynamic Subpage Header */}
       <div className="flex flex-col w-full gap-2 -mt-3">
         <Reveal delay={0.05}>
-          <h2 className="font-display text-2xl text-black dark:text-white italic font-medium leading-none">
+          <h2 className="font-display text-3xl sm:text-4xl text-black dark:text-white italic font-medium leading-none">
             Craft
           </h2>
         </Reveal>

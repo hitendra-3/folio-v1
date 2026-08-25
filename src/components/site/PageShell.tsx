@@ -51,5 +51,5 @@ export function PageShell({ children, scrollLabel, showScrollLoader = false }: P
 }
 
 export function SectionTitle({ children }: { children: ReactNode }) {
-  return <h2 className="font-display font-medium text-lg italic text-foreground leading-none">{children}</h2>;
+  return <h2 className="font-display font-medium text-[22px] sm:text-2xl italic text-foreground leading-none">{children}</h2>;
 }

@@ -39,7 +39,6 @@ export function CraftCard({ item, hoveredSlug, setHoveredSlug }: CraftCardProps)
       <SiteLink
         to="/craft/$slug"
         params={{ slug: item.slug }}
-        onClick={() => play("click")}
         className="group flex items-center justify-between gap-3 py-2 cursor-pointer"
       >
         <div className="flex items-center gap-3 min-w-0">

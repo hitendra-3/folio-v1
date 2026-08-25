@@ -33,22 +33,7 @@ export function SoundControls() {
       }
     };
 
-    // Check if on a mobile or touch device where full-viewport bitmap snapshots cause lag
-    const isMobile =
-      typeof window !== "undefined" &&
-      (window.innerWidth < 768 ||
-        window.matchMedia("(pointer: coarse)").matches ||
-        "ontouchstart" in window ||
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-
-    // On mobile, use instant hardware-accelerated CSS transition (0ms lag, 60/120 FPS smooth)
-    if (isMobile || !document.startViewTransition) {
-      updateTheme();
-      play("toggle");
-      return;
-    }
-
-    // On desktop, calculate exact button center for expanding circular view transition
+    // Calculate exact button center for expanding circular view transition
     const btn = themeBtnRef.current || (e.currentTarget as HTMLButtonElement);
     const rect = btn?.getBoundingClientRect ? btn.getBoundingClientRect() : null;
     const x = rect && rect.width > 0 ? rect.left + rect.width / 2 : window.innerWidth - 36;
@@ -58,6 +43,12 @@ export function SoundControls() {
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y)
     );
+
+    if (!document.startViewTransition) {
+      updateTheme();
+      play("toggle");
+      return;
+    }
 
     const transition = document.startViewTransition(updateTheme);
 
@@ -70,7 +61,7 @@ export function SoundControls() {
           ],
         },
         {
-          duration: 400, // Responsive, buttery smooth desktop transition
+          duration: 450,
           easing: "cubic-bezier(0.2, 0, 0, 1)",
           pseudoElement: "::view-transition-new(root)",
         }

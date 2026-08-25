@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useState } from "react";
-import { Github, Linkedin, Mail, FileText, Twitter } from "lucide-react";
+import { Github, Linkedin, Mail, FileText } from "lucide-react";
 import { PageShell, SectionTitle } from "@/components/site/PageShell";
 import { Reveal, RevealOnScroll } from "@/components/site/Reveal";
 import { SiteLink } from "@/components/site/SiteLink";
@@ -10,6 +10,19 @@ import { CraftCard } from "@/components/site/CraftCard";
 import { projects, notes, craft } from "@/lib/content";
 import { useSound } from "@/lib/sound";
 import cmritLogo from "@/assets/cmrit-logo.png";
+
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className={className}
+      fill="currentColor"
+    >
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,11 +45,11 @@ export const Route = createFileRoute("/")({
 });
 
 const links = [
-  { label: "Twitter", href: "https://x.com/hitendra_03", icon: Twitter },
+  { label: "Twitter", href: "https://x.com/hitendra_03", icon: XIcon },
   { label: "LinkedIn", href: "https://linkedin.com/in/hitendra-s", icon: Linkedin },
   { label: "GitHub", href: "https://github.com/hitendra-3", icon: Github },
   { label: "Mail", href: "mailto:shitendra777@gmail.com", icon: Mail },
-  { label: "Résumé", href: "/Resume_V1.pdf", icon: FileText },
+  { label: "Resume", href: "/Resume_V1.pdf", icon: FileText },
 ];
 
 function Index() {
@@ -76,7 +89,7 @@ function Index() {
         </Reveal>
         <Reveal delay={0.12}>
           <p>
-            I architect high-performance AI systems, low-latency real-time applications, and fine-crafted user interfaces. 
+            I architect high-performance AI systems, low-latency real-time applications, and fine-crafted user interfaces.
             I care deeply about software engineering discipline, mathematical precision, and interface craft — the kind you notice when it&apos;s done right, and miss when it&apos;s not.
           </p>
         </Reveal>
@@ -95,7 +108,7 @@ function Index() {
         </Reveal>
         <Reveal delay={0.26}>
           <p>
-            Previously, I&apos;ve engineered LLM-driven QA test generation engines and conducted vulnerability 
+            Previously, I&apos;ve engineered LLM-driven QA test generation engines and conducted vulnerability
             assessments in cyber security audit contexts.
           </p>
         </Reveal>

@@ -12,15 +12,8 @@ export type PageShellProps = {
   showScrollLoader?: boolean;
 };
 
-/** Shared page frame: identical entrance animation + arrival sound on every page. */
+/** Shared page frame: identical entrance animation on every page. */
 export function PageShell({ children, scrollLabel, showScrollLoader = false }: PageShellProps) {
-  const { play } = useSound();
-
-  useEffect(() => {
-    play("nav");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <>
       <motion.div

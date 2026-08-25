@@ -26,7 +26,7 @@ export function Footer() {
         </span>
         <span className="text-black/20 dark:text-white/20">•</span>
         <span className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200 cursor-default">
-          build v1.2.0
+          build v1.2.1
         </span>
       </div>
       <div className="flex items-center gap-1.5 tabular-nums">

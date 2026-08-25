@@ -159,20 +159,32 @@ export type CraftItem = {
   slug: string;
   title: string;
   date: string;
+  interaction: string;
   note: string;
+  howItWorks: string[];
 };
 
 export const craft: CraftItem[] = [
   {
     slug: "prism-light-weaver",
-    title: "Prism Light Weaver",
+    title: "A Memory Stack",
     date: "Aug 2026",
-    note: "Interactive optical glass prism simulation with chromatic dispersion, spectral refraction, and crystal Web Audio synthesis.",
+    interaction: "Motion / Tactile Audio",
+    note: "Tactile card stack with monochrome landscape photography, hover color reveal, and realistic acoustic card-flick sound synthesis.",
+    howItWorks: [
+      "Built with Framer Motion and custom CSS transformations for natural card physics, spring drag resistance, and tactile swipe gestures.",
+      "Features a real-time Web Audio synthesizer that triggers subtle tactile clicks and deck shuffling sounds on manual card interactions.",
+    ],
   },
   {
     slug: "gravitational-vortex",
-    title: "Gravitational Particle Vortex",
-    date: "May 2026",
-    note: "An interactive N-body kinetic particle gravity simulation with orbital shockwaves, cursor singularity pull, and cosmic sub-bass resonance.",
+    title: "3D Globe",
+    date: "Aug 2026",
+    interaction: "3D WebGL / Kinetic Physics",
+    note: "An autorotating, interactive 3D WebGL globe with free kinetic drag physics, highlighting India and Bengaluru.",
+    howItWorks: [
+      "Rendered with Cobe WebGL shaders using a 24,000-dot procedural sampling matrix and custom spherical projections.",
+      "Features smooth multi-directional touch and mouse inertia, allowing the globe to freely spin with decaying momentum across both axes.",
+    ],
   },
 ];

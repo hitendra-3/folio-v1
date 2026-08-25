@@ -5,11 +5,8 @@ import { Reveal, RevealOnScroll } from "@/components/site/Reveal";
 import { CraftCard } from "@/components/site/CraftCard";
 import { craft } from "@/lib/content";
 import { useSound } from "@/lib/sound";
-import work1 from "@/assets/work-1.jpg";
-import work2 from "@/assets/work-2.jpg";
-import work3 from "@/assets/work-3.jpg";
-import work4 from "@/assets/work-4.jpg";
-import profile from "@/assets/profile.jpg";
+import Stack from "@/components/Stack";
+import createGlobe from "cobe";
 
 export const Route = createFileRoute("/craft/")({
   head: () => ({
@@ -19,7 +16,7 @@ export const Route = createFileRoute("/craft/")({
         name: "description",
         content: "Interactive UI experiments, physics simulations, and audio toys built by Hitendra S.",
       },
-      { property: "og:title", content: "Craft — Hitendra S" },
+      { property: "og:title", content: "Craft â€” Hitendra S" },
       {
         property: "og:description",
         content: "Interactive UI experiments, physics simulations, and audio toys built by Hitendra S.",
@@ -67,185 +64,87 @@ function CraftIndex() {
 }
 
 // -----------------------------------------------------------------
-// -----------------------------------------------------------------
-// Craft Component 1: Prism Light Weaver (Interactive Optical Glass Refraction)
+// Craft Component 1: Memory Stack â€” Draggable Identity Card Deck
 // -----------------------------------------------------------------
 export function PrismLightWeaver() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const mouseRef = useRef<{ x: number; y: number; active: boolean }>({ x: 100, y: 150, active: false });
-  const angleRef = useRef(0);
-  const lastSoundTimeRef = useRef(0);
+  const cardData = [
+    {
+      key: "1",
+      src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=500&auto=format&fit=crop",
+      quote: "stay curious.",
+    },
+    {
+      key: "2",
+      src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=500&auto=format&fit=crop",
+      quote: "breathe deep.",
+    },
+    {
+      key: "3",
+      src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=500&auto=format&fit=crop",
+      quote: "go further.",
+    },
+    {
+      key: "4",
+      src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=500&auto=format&fit=crop",
+      quote: "above noise.",
+    },
+  ];
 
-  const playGlassNote = (freq: number) => {
-    const now = Date.now();
-    if (now - lastSoundTimeRef.current < 100) return;
-    lastSoundTimeRef.current = now;
-
-    try {
-      if (!audioCtxRef.current) {
-        const Ctor = window.AudioContext || (window as any).webkitAudioContext;
-        audioCtxRef.current = new Ctor();
-      }
-      const ctx = audioCtxRef.current;
-      if (ctx.state === "suspended") void ctx.resume();
-
-      const t = ctx.currentTime;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(freq, t);
-
-      gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.linearRampToValueAtTime(0.08, t + 0.01);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.8);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start(t);
-      osc.stop(t + 0.85);
-    } catch {}
-  };
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-
-    const render = () => {
-      const dpr = window.devicePixelRatio || 1;
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-
-      ctx.save();
-      ctx.scale(dpr, dpr);
-      ctx.clearRect(0, 0, width, height);
-
-      const isDark = document.documentElement.classList.contains("dark");
-      angleRef.current += 0.003;
-
-      const centerX = width / 2;
-      const centerY = height / 2 + 10;
-      const prismRadius = Math.min(width, height) * 0.22;
-
-      // Draw Glass Prism Triangle
-      const prismAngle = angleRef.current;
-      const p1 = {
-        x: centerX + prismRadius * Math.cos(prismAngle),
-        y: centerY + prismRadius * Math.sin(prismAngle),
-      };
-      const p2 = {
-        x: centerX + prismRadius * Math.cos(prismAngle + (2 * Math.PI) / 3),
-        y: centerY + prismRadius * Math.sin(prismAngle + (2 * Math.PI) / 3),
-      };
-      const p3 = {
-        x: centerX + prismRadius * Math.cos(prismAngle + (4 * Math.PI) / 3),
-        y: centerY + prismRadius * Math.sin(prismAngle + (4 * Math.PI) / 3),
-      };
-
-      // Incident Beam From Mouse
-      const originX = mouseRef.current.active ? mouseRef.current.x : 60;
-      const originY = mouseRef.current.active ? mouseRef.current.y : height / 2;
-
-      // Draw White Incident Laser Beam
-      ctx.beginPath();
-      ctx.moveTo(originX, originY);
-      ctx.lineTo(centerX, centerY);
-      ctx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.95)" : "rgba(15, 23, 42, 0.95)";
-      ctx.lineWidth = 3;
-      ctx.shadowColor = isDark ? "#ffffff" : "#000000";
-      ctx.shadowBlur = 8;
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-
-      // Spectral Rainbow Colors (Red to Violet)
-      const spectrum = [
-        { color: "#ef4444", offset: -0.22, freq: 523.25 }, // C5
-        { color: "#f97316", offset: -0.14, freq: 587.33 }, // D5
-        { color: "#eab308", offset: -0.06, freq: 659.25 }, // E5
-        { color: "#22c55e", offset: 0.02, freq: 698.46 },  // F5
-        { color: "#06b6d4", offset: 0.1, freq: 783.99 },   // G5
-        { color: "#3b82f6", offset: 0.18, freq: 880.00 },  // A5
-        { color: "#a855f7", offset: 0.26, freq: 987.77 },  // B5
-      ];
-
-      // Draw Refracted Spectral Rays
-      spectrum.forEach((spec) => {
-        const rayAngle = Math.atan2(centerY - originY, centerX - originX) + spec.offset + Math.sin(prismAngle) * 0.1;
-        const endX = centerX + Math.cos(rayAngle) * width;
-        const endY = centerY + Math.sin(rayAngle) * height;
-
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.lineTo(endX, endY);
-        ctx.strokeStyle = spec.color;
-        ctx.lineWidth = 2.5;
-        ctx.globalAlpha = 0.85;
-        ctx.shadowColor = spec.color;
-        ctx.shadowBlur = 10;
-        ctx.stroke();
-      });
-      ctx.globalAlpha = 1.0;
-      ctx.shadowBlur = 0;
-
-      // Render Glass Prism Body
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.lineTo(p3.x, p3.y);
-      ctx.closePath();
-
-      ctx.fillStyle = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)";
-      ctx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.4)" : "rgba(0, 0, 0, 0.3)";
-      ctx.lineWidth = 2;
-      ctx.fill();
-      ctx.stroke();
-
-      // Trigger audio on pointer movement
-      if (mouseRef.current.active) {
-        const noteIdx = Math.floor((mouseRef.current.y / height) * spectrum.length);
-        const validIdx = Math.max(0, Math.min(spectrum.length - 1, noteIdx));
-        playGlassNote(spectrum[validIdx].freq);
-      }
-
-      animId = requestAnimationFrame(render);
-    };
-
-    render();
-    return () => cancelAnimationFrame(animId);
-  }, []);
-
-  const handlePointer = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mouseRef.current = {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-      active: true,
-    };
-  };
+  const cards = cardData.map(({ key, src, quote }) => (
+    <div key={key} className="stack-photo-card">
+      <img
+        src={src}
+        alt={quote}
+        className="stack-card-img"
+      />
+      <div className="stack-card-overlay" />
+      <p style={{
+        position: "absolute",
+        bottom: "16px",
+        left: "16px",
+        margin: 0,
+        fontSize: "14px",
+        fontWeight: 500,
+        letterSpacing: "0.03em",
+        color: "rgba(255, 255, 255, 0.92)",
+        fontFamily: "'Inter', sans-serif",
+        lineHeight: 1.2,
+        textShadow: "0 1px 8px rgba(0,0,0,0.6)",
+        pointerEvents: "none",
+      }}>
+        {quote}
+      </p>
+    </div>
+  ));
 
   return (
-    <div className="relative w-full h-[320px] rounded-xl overflow-hidden bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center select-none">
-      <canvas
-        ref={canvasRef}
-        onPointerMove={handlePointer}
-        onPointerDown={handlePointer}
-        onPointerLeave={() => { mouseRef.current.active = false; }}
-        className="w-full h-full cursor-crosshair touch-none"
-      />
-      <div className="absolute bottom-3 left-3 pointer-events-none text-[11px] font-mono text-black/50 dark:text-white/50 bg-white/70 dark:bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-md border border-black/10 dark:border-white/10">
-        Drag pointer to refract light beam through optical glass prism
+    <div style={{ display: "flex", flexDirection: "column", gap: "18px", width: "100%" }}>
+      <div className="relative w-full flex items-center justify-center" style={{ height: 275 }}>
+        <div style={{ width: 205, height: 245 }}>
+          <Stack
+            randomRotation={true}
+            sensitivity={140}
+            sendToBackOnClick={true}
+            autoplay={true}
+            autoplayDelay={3800}
+            pauseOnHover={true}
+            enableSound={true}
+            animationConfig={{ stiffness: 220, damping: 22 }}
+            cards={cards}
+          />
+        </div>
+      </div>
+      <div className="flex items-center justify-center gap-2 text-[11px] font-mono text-black/40 dark:text-white/35 pointer-events-none select-none">
+        <span>drag</span>
+        <span className="text-black/20 dark:text-white/20">Â·</span>
+        <span>hover to reveal</span>
+        <span className="text-black/20 dark:text-white/20">Â·</span>
+        <span>click to cycle</span>
       </div>
     </div>
   );
 }
+
 
 // Craft Component 1: Node Plucker (5-String Polyphonic Kinetic Harp)
 // -----------------------------------------------------------------
@@ -749,312 +648,176 @@ export function DinoRunner() {
 }
 
 // -----------------------------------------------------------------
-// Craft Component 2: Gravitational Particle Vortex (N-Body Kinetic Gravity Engine)
+// Craft Component 2: 3D Interactive Globe
 // -----------------------------------------------------------------
 export function GravitationalVortex() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const oscRef = useRef<OscillatorNode | null>(null);
-  const gainRef = useRef<GainNode | null>(null);
-  const isDraggingRef = useRef(false);
-  const [particleCount] = useState(250);
-  const [avgVelocity, setAvgVelocity] = useState(12.4);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const widthRef = useRef<number>(340);
 
-  const stateRef = useRef({
-    gravityX: 0,
-    gravityY: 0,
-    targetX: 0,
-    targetY: 0,
-    shockwaveR: 0,
-    shockwaveMaxR: 0,
-    particles: [] as {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      radius: number;
-      color: string;
-      trail: { x: number; y: number }[];
-    }[],
-  });
+  // Exact coordinates for Bengaluru, Karnataka, India
+  const BENGALURU_LAT = 12.9716;
+  const BENGALURU_LNG = 77.5946;
 
-  const startAudio = () => {
-    try {
-      if (!audioCtxRef.current) {
-        const Ctor = window.AudioContext || (window as any).webkitAudioContext;
-        audioCtxRef.current = new Ctor();
+  // Initial rotation centered directly on India (phi = 6.07 rad, theta = -0.23 rad)
+  const phiRef = useRef(6.07);
+  const thetaRef = useRef(-0.23);
+  const velocityRef = useRef({ phi: 0.002, theta: 0 });
+  const isPointerDownRef = useRef(false);
+  const lastPointerPosRef = useRef<{ x: number; y: number } | null>(null);
+
+  useEffect(() => {
+    let globe: any;
+
+    const init = () => {
+      if (!canvasRef.current || !containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const width = rect.width || containerRef.current.offsetWidth || 340;
+      widthRef.current = width;
+
+      const isDark = document.documentElement.classList.contains("dark");
+
+      globe = createGlobe(canvasRef.current, {
+        width: width * 2,
+        height: width * 2,
+        devicePixelRatio: 2,
+        phi: phiRef.current,
+        theta: thetaRef.current,
+        dark: isDark ? 1 : 0,
+        diffuse: isDark ? 1.5 : 0.6,
+        mapSamples: 24000,
+        mapBrightness: isDark ? 5.5 : 1.35,
+        baseColor: isDark ? [0.14, 0.14, 0.18] : [0.93, 0.93, 0.96],
+        markerColor: [0.23, 0.51, 0.96],
+        glowColor: isDark ? [0.12, 0.14, 0.18] : [0.94, 0.95, 0.98],
+        markers: [
+          // Native Cobe glowing blue marker at Bengaluru
+          { location: [BENGALURU_LAT, BENGALURU_LNG], size: 0.1 },
+        ],
+        onRender: (state) => {
+          if (!isPointerDownRef.current) {
+            phiRef.current += velocityRef.current.phi;
+            thetaRef.current += velocityRef.current.theta;
+
+            // Decay velocity to slow idle auto-rotation
+            velocityRef.current.phi = velocityRef.current.phi * 0.94 + 0.0018 * 0.06;
+            velocityRef.current.theta = velocityRef.current.theta * 0.92;
+          }
+
+          // Clamp theta
+          thetaRef.current = Math.max(-0.65, Math.min(0.65, thetaRef.current));
+
+          state.phi = phiRef.current;
+          state.theta = thetaRef.current;
+          state.width = widthRef.current * 2;
+          state.height = widthRef.current * 2;
+        },
+      });
+
+      if (canvasRef.current) {
+        canvasRef.current.style.opacity = "1";
       }
-      const ctx = audioCtxRef.current;
-      if (ctx.state === "suspended") void ctx.resume();
+    };
 
-      if (!oscRef.current) {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "sawtooth";
-        osc.frequency.setValueAtTime(55, ctx.currentTime);
-        gain.gain.setValueAtTime(0, ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.04, ctx.currentTime + 0.08);
+    const handleResize = () => {
+      if (globe) globe.destroy();
+      init();
+    };
 
-        // Lowpass filter for smooth deep bass
-        const filter = ctx.createBiquadFilter();
-        filter.type = "lowpass";
-        filter.frequency.setValueAtTime(220, ctx.currentTime);
+    init();
+    window.addEventListener("resize", handleResize);
 
-        osc.connect(filter).connect(gain).connect(ctx.destination);
-        osc.start();
-        oscRef.current = osc;
-        gainRef.current = gain;
-      }
-    } catch {}
-  };
+    return () => {
+      if (globe) globe.destroy();
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
-  const playShockwaveChime = () => {
-    try {
-      const Ctor = window.AudioContext || (window as any).webkitAudioContext;
-      const ctx = audioCtxRef.current || new Ctor();
-      audioCtxRef.current = ctx;
-      if (ctx.state === "suspended") void ctx.resume();
-
-      const now = ctx.currentTime;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(528, now); // 528Hz Solfeggio frequency
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.linearRampToValueAtTime(0.08, now + 0.005);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
-
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.42);
-    } catch {}
-  };
-
-  const stopAudio = () => {
-    if (gainRef.current && audioCtxRef.current) {
-      gainRef.current.gain.setTargetAtTime(0, audioCtxRef.current.currentTime, 0.1);
-      setTimeout(() => {
-        try {
-          oscRef.current?.stop();
-          oscRef.current?.disconnect();
-          oscRef.current = null;
-        } catch {}
-      }, 120);
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    isPointerDownRef.current = true;
+    lastPointerPosRef.current = { x: e.clientX, y: e.clientY };
+    if (canvasRef.current) {
+      canvasRef.current.style.cursor = "grabbing";
+      try {
+        canvasRef.current.setPointerCapture(e.pointerId);
+      } catch {}
     }
   };
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (!isPointerDownRef.current || !lastPointerPosRef.current) return;
 
-    let animId: number;
-    const colors = ["#06b6d4", "#8b5cf6", "#f59e0b", "#10b981", "#3b82f6"];
+    const deltaX = e.clientX - lastPointerPosRef.current.x;
+    const deltaY = e.clientY - lastPointerPosRef.current.y;
 
-    // Initialize 250 kinetic particles in orbital plane
-    const w = canvas.clientWidth || 600;
-    const h = canvas.clientHeight || 208;
-    const cx = w / 2;
-    const cy = h / 2;
+    const phiDelta = deltaX * 0.007;
+    const thetaDelta = deltaY * 0.005;
 
-    stateRef.current.gravityX = cx;
-    stateRef.current.gravityY = cy;
-    stateRef.current.targetX = cx;
-    stateRef.current.targetY = cy;
+    phiRef.current += phiDelta;
+    thetaRef.current += thetaDelta;
 
-    stateRef.current.particles = Array.from({ length: 250 }).map(() => {
-      const angle = Math.random() * Math.PI * 2;
-      const dist = 20 + Math.random() * (Math.min(w, h) * 0.4);
-      const speed = Math.sqrt(dist) * 0.45;
-      return {
-        x: cx + Math.cos(angle) * dist,
-        y: cy + Math.sin(angle) * dist,
-        vx: -Math.sin(angle) * speed,
-        vy: Math.cos(angle) * speed,
-        radius: 1.2 + Math.random() * 1.8,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        trail: [],
-      };
-    });
-
-    const render = () => {
-      const dpr = window.devicePixelRatio || 1;
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-
-      ctx.save();
-      ctx.scale(dpr, dpr);
-      ctx.clearRect(0, 0, width, height);
-
-      const isDark = document.documentElement.classList.contains("dark");
-      const st = stateRef.current;
-
-      // Smoothly interpolate gravity center toward target cursor
-      st.gravityX += (st.targetX - st.gravityX) * 0.1;
-      st.gravityY += (st.targetY - st.gravityY) * 0.1;
-
-      // Draw Gravitational Singularity Core
-      ctx.beginPath();
-      ctx.arc(st.gravityX, st.gravityY, 6, 0, Math.PI * 2);
-      ctx.fillStyle = isDark ? "#ffffff" : "#18181b";
-      ctx.shadowColor = isDark ? "#06b6d4" : "#8b5cf6";
-      ctx.shadowBlur = 15;
-      ctx.fill();
-      ctx.shadowBlur = 0;
-
-      // Shockwave Pulse Animation
-      if (st.shockwaveR > 0) {
-        st.shockwaveR += 6;
-        const alpha = Math.max(0, 1 - st.shockwaveR / st.shockwaveMaxR);
-        ctx.beginPath();
-        ctx.arc(st.gravityX, st.gravityY, st.shockwaveR, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(6, 182, 212, ${alpha})`;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        if (st.shockwaveR >= st.shockwaveMaxR) {
-          st.shockwaveR = 0;
-        }
-      }
-
-      let totalV = 0;
-
-      // Update & Render N-Body Particles
-      st.particles.forEach((p) => {
-        const dx = st.gravityX - p.x;
-        const dy = st.gravityY - p.y;
-        const distSq = dx * dx + dy * dy + 100; // Softening parameter
-        const dist = Math.sqrt(distSq);
-
-        // Gravitational force G * M / r^2
-        const force = 180 / distSq;
-        const ax = (dx / dist) * force;
-        const ay = (dy / dist) * force;
-
-        p.vx += ax;
-        p.vy += ay;
-
-        // Velocity Damping
-        p.vx *= 0.992;
-        p.vy *= 0.992;
-
-        p.x += p.vx;
-        p.y += p.vy;
-
-        const vSpeed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-        totalV += vSpeed;
-
-        // Trail history
-        p.trail.push({ x: p.x, y: p.y });
-        if (p.trail.length > 4) p.trail.shift();
-
-        // Draw particle trail
-        if (p.trail.length > 1) {
-          ctx.beginPath();
-          ctx.moveTo(p.trail[0].x, p.trail[0].y);
-          for (let i = 1; i < p.trail.length; i++) {
-            ctx.lineTo(p.trail[i].x, p.trail[i].y);
-          }
-          ctx.strokeStyle = p.color;
-          ctx.globalAlpha = 0.35;
-          ctx.lineWidth = p.radius * 0.8;
-          ctx.stroke();
-          ctx.globalAlpha = 1;
-        }
-
-        // Draw particle head
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      const currentAvgV = Math.round((totalV / st.particles.length) * 10) / 10;
-      setAvgVelocity(currentAvgV);
-
-      // Audio Frequency Modulation based on kinetic velocity
-      if (oscRef.current && audioCtxRef.current) {
-        const targetFreq = 45 + Math.min(65, currentAvgV * 5);
-        oscRef.current.frequency.setTargetAtTime(targetFreq, audioCtxRef.current.currentTime, 0.05);
-      }
-
-      ctx.restore();
-      animId = requestAnimationFrame(render);
+    // Track fling velocity
+    velocityRef.current = {
+      phi: phiDelta * 0.85,
+      theta: thetaDelta * 0.85,
     };
 
-    render();
-    return () => cancelAnimationFrame(animId);
-  }, []);
-
-  const handlePointer = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    stateRef.current.targetX = x;
-    stateRef.current.targetY = y;
+    lastPointerPosRef.current = { x: e.clientX, y: e.clientY };
   };
 
-  const triggerShockwave = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    handlePointer(e);
-    stateRef.current.shockwaveR = 5;
-    stateRef.current.shockwaveMaxR = 120;
-    playShockwaveChime();
-
-    // Accelerate particles outward from singularity
-    const gx = stateRef.current.gravityX;
-    const gy = stateRef.current.gravityY;
-    stateRef.current.particles.forEach((p) => {
-      const dx = p.x - gx;
-      const dy = p.y - gy;
-      const dist = Math.sqrt(dx * dx + dy * dy) + 1;
-      p.vx += (dx / dist) * 4;
-      p.vy += (dy / dist) * 4;
-    });
+  const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    isPointerDownRef.current = false;
+    lastPointerPosRef.current = null;
+    if (canvasRef.current) {
+      canvasRef.current.style.cursor = "grab";
+      try {
+        canvasRef.current.releasePointerCapture(e.pointerId);
+      } catch {}
+    }
   };
 
   return (
-    <div className="space-y-2 flex flex-col items-center w-full select-none">
-      <div className="w-full h-52 rounded-xl bg-black/[0.04] dark:bg-white/[0.03] border border-black/10 dark:border-white/10 relative overflow-hidden flex items-center justify-center">
+    <div className="space-y-3 flex flex-col items-center w-full select-none">
+      {/* 3D Globe Frame */}
+      <div
+        ref={containerRef}
+        className="relative w-full max-w-[380px] aspect-square flex items-center justify-center overflow-hidden rounded-2xl"
+      >
+        {/* WebGL Base Globe Canvas */}
         <canvas
           ref={canvasRef}
-          onPointerDown={(e) => {
-            isDraggingRef.current = true;
-            startAudio();
-            triggerShockwave(e);
-            e.currentTarget.setPointerCapture(e.pointerId);
+          className="opacity-0 transition-opacity duration-700 w-full h-full touch-none"
+          style={{
+            cursor: "grab",
+            contain: "layout paint size",
           }}
-          onPointerMove={(e) => {
-            if (isDraggingRef.current) handlePointer(e);
-          }}
-          onPointerUp={(e) => {
-            isDraggingRef.current = false;
-            stopAudio();
-            try { e.currentTarget.releasePointerCapture(e.pointerId); } catch {}
-          }}
-          className="w-full h-full cursor-crosshair touch-none"
-          style={{ width: "100%", height: "208px" }}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
         />
 
-        {/* HUD Top Badge */}
-        <div className="absolute top-3 right-4 font-mono text-[11px] text-black/60 dark:text-white/60 font-semibold space-x-3 pointer-events-none flex items-center">
-          <span>{particleCount} PARTICLES</span>
-          <span className="px-2 py-0.5 rounded bg-black/5 dark:bg-white/10">{avgVelocity} km/s</span>
-        </div>
+        {/* Subtle Edge Vignette */}
+        <div
+          className="absolute inset-0 pointer-events-none rounded-2xl"
+          style={{
+            background:
+              "radial-gradient(circle at center, transparent 46%, var(--bg-base, transparent) 82%)",
+          }}
+        />
       </div>
-      <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-mono">
-        Drag cursor to shift gravity singularity • Click to emit cosmic shockwave pulse
-      </span>
+
+      <div className="flex items-center justify-center gap-2 text-[11px] font-mono text-black/40 dark:text-white/35 pointer-events-none select-none">
+        <span>drag in any direction to spin</span>
+        <span className="text-black/20 dark:text-white/20">·</span>
+        <span>free inertia</span>
+        <span className="text-black/20 dark:text-white/20">·</span>
+        <span>bengaluru, india</span>
+      </div>
     </div>
   );
 }
 
-// -----------------------------------------------------------------
 // Craft Component 3: Acoustic Wave Matrix (Coordinate FM Synth)
 // -----------------------------------------------------------------
 export function AcousticWaveform() {
@@ -1420,7 +1183,7 @@ export function KineticCompass() {
 
         {/* HUD Top Badge */}
         <div className="absolute top-3 right-4 font-mono text-[11px] text-black/60 dark:text-white/60 font-semibold space-x-2 pointer-events-none">
-          <span>{String(Math.round(angle)).padStart(3, "0")}° {currentCardinal}</span>
+          <span>{String(Math.round(angle)).padStart(3, "0")}Â° {currentCardinal}</span>
         </div>
       </div>
       <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-mono">
@@ -1481,7 +1244,7 @@ export function PixelRain() {
     const fontSize = 12;
     const cols = Math.floor(w / fontSize);
     const drops = Array.from({ length: cols }, () => Math.random() * -50);
-    const chars = "アイウエオカキクケコサシスセソ01010110";
+    const chars = "ã‚¢ã‚¤ã‚¦ã‚¨ã‚ªã‚«ã‚­ã‚¯ã‚±ã‚³ã‚µã‚·ã‚¹ã‚»ã‚½01010110";
     let frame = 0;
 
     const render = () => {

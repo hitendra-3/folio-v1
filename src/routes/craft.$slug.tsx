@@ -57,8 +57,18 @@ function CraftDetail() {
   const Component = componentsMap[item.slug];
 
   const currentIndex = craft.findIndex((c) => c.slug === item.slug);
-  const prevCraft = craft[(currentIndex - 1 + craft.length) % craft.length];
-  const nextCraft = craft[(currentIndex + 1) % craft.length];
+  const prevCraft =
+    craft.length > 2
+      ? craft[(currentIndex - 1 + craft.length) % craft.length]
+      : currentIndex > 0
+        ? craft[currentIndex - 1]
+        : null;
+  const nextCraft =
+    craft.length > 2
+      ? craft[(currentIndex + 1) % craft.length]
+      : currentIndex < craft.length - 1
+        ? craft[currentIndex + 1]
+        : null;
 
   return (
     <PageShell scrollLabel={item.title} showScrollLoader>
@@ -82,7 +92,7 @@ function CraftDetail() {
                 <span className="block text-[0.7rem] uppercase tracking-wider text-black/40 dark:text-white/40">
                   Interaction
                 </span>
-                <span className="text-black/80 dark:text-white/85 font-medium">Tactile Web Audio / Canvas</span>
+                <span className="text-black/80 dark:text-white/85 font-medium">{item.interaction}</span>
               </div>
             </div>
           </Reveal>
@@ -104,20 +114,22 @@ function CraftDetail() {
           </RevealOnScroll>
           <RevealOnScroll delay={0.05}>
             <p className="text-[15px] leading-7 text-black/70 dark:text-white/70">
-              {item.note} The entire component is built using vanilla canvas rendering, custom physical vector mathematics (mass-spring-damper simulations), and the native Web Audio API to link visuals directly to acoustic waveforms.
+              {item.note}
             </p>
           </RevealOnScroll>
-          <RevealOnScroll delay={0.1}>
-            <p className="text-[15px] leading-7 text-black/70 dark:text-white/70">
-              Hover over or click and drag inside the interactive canvas frame above to engage the physical nodes. The sound context will start playing synthesized sound waves dynamically based on the coordinate points, damping settings, or friction metrics.
-            </p>
-          </RevealOnScroll>
+          {item.howItWorks?.map((paragraph, idx) => (
+            <RevealOnScroll key={idx} delay={0.1 + idx * 0.05}>
+              <p className="text-[15px] leading-7 text-black/70 dark:text-white/70">
+                {paragraph}
+              </p>
+            </RevealOnScroll>
+          ))}
         </div>
 
         {/* Next/Prev Navigation Footer */}
         <footer className="border-t border-black/5 dark:border-white/5 pt-8 mt-12">
           <div className="flex items-center justify-between text-sm">
-            {prevCraft && (
+            {prevCraft ? (
               <SiteLink
                 to="/craft/$slug"
                 params={{ slug: prevCraft.slug }}
@@ -126,11 +138,25 @@ function CraftDetail() {
                 <span className="text-[10px] uppercase font-semibold text-black/30 dark:text-white/30 flex items-center gap-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
                   <ArrowLeft className="size-3 group-hover:-translate-x-0.5 transition-transform" /> Previous
                 </span>
-                <span className="font-sans font-medium text-black/80 dark:text-white/80 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">{prevCraft.title}</span>
+                <span className="font-sans font-medium text-black/80 dark:text-white/80 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
+                  {prevCraft.title}
+                </span>
+              </SiteLink>
+            ) : (
+              <SiteLink
+                to="/craft"
+                className="group flex flex-col items-start gap-1 cursor-pointer transition-colors"
+              >
+                <span className="text-[10px] uppercase font-semibold text-black/30 dark:text-white/30 flex items-center gap-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
+                  <ArrowLeft className="size-3 group-hover:-translate-x-0.5 transition-transform" /> All Craft
+                </span>
+                <span className="font-sans font-medium text-black/80 dark:text-white/80 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
+                  Overview
+                </span>
               </SiteLink>
             )}
 
-            {nextCraft && (
+            {nextCraft ? (
               <SiteLink
                 to="/craft/$slug"
                 params={{ slug: nextCraft.slug }}
@@ -139,7 +165,21 @@ function CraftDetail() {
                 <span className="text-[10px] uppercase font-semibold text-black/30 dark:text-white/30 flex items-center gap-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
                   Next <ArrowRight className="size-3 group-hover:translate-x-0.5 transition-transform" />
                 </span>
-                <span className="font-sans font-medium text-black/80 dark:text-white/80 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">{nextCraft.title}</span>
+                <span className="font-sans font-medium text-black/80 dark:text-white/80 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
+                  {nextCraft.title}
+                </span>
+              </SiteLink>
+            ) : (
+              <SiteLink
+                to="/craft"
+                className="group flex flex-col items-end gap-1 cursor-pointer transition-colors text-right"
+              >
+                <span className="text-[10px] uppercase font-semibold text-black/30 dark:text-white/30 flex items-center gap-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
+                  All Craft <ArrowRight className="size-3 group-hover:translate-x-0.5 transition-transform" />
+                </span>
+                <span className="font-sans font-medium text-black/80 dark:text-white/80 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
+                  Overview
+                </span>
               </SiteLink>
             )}
           </div>

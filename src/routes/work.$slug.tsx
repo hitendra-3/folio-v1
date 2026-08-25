@@ -39,7 +39,7 @@ function ProjectDetail() {
   const { project } = Route.useLoaderData();
   const { play } = useSound();
   const currentIndex = projects.findIndex((p) => p.slug === project.slug);
-  const nextProject = projects[(currentIndex + 1) % projects.length];
+  const nextProject = currentIndex < projects.length - 1 ? projects[currentIndex + 1] : null;
 
   return (
     <PageShell scrollLabel={project.title} showScrollLoader>
@@ -143,25 +143,42 @@ function ProjectDetail() {
       <section className="mt-20 border-t border-border pt-12">
         <RevealOnScroll>
           <span className="text-xs uppercase tracking-wider text-muted-foreground/60">
-            Next Project
+            {nextProject ? "Next Project" : "All Projects"}
           </span>
         </RevealOnScroll>
         <RevealOnScroll delay={0.06}>
-          <SiteLink
-            to="/work/$slug"
-            params={{ slug: nextProject.slug }}
-            className="group mt-2 block"
-            preload="intent"
-          >
-            <div className="flex items-center justify-between py-6">
-              <span className="display text-3xl font-normal text-black/60 dark:text-white/60 transition-colors group-hover:text-blue-500 dark:group-hover:text-blue-400 sm:text-4xl">
-                {nextProject.title}
-              </span>
-              <div className="flex size-12 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/10 transition-colors">
-                <ArrowRight className="size-4 text-black/60 dark:text-white/60 transition-transform group-hover:translate-x-0.5 group-hover:text-blue-500 dark:group-hover:text-blue-400" />
+          {nextProject ? (
+            <SiteLink
+              to="/work/$slug"
+              params={{ slug: nextProject.slug }}
+              className="group mt-2 block cursor-pointer"
+              preload="intent"
+            >
+              <div className="flex items-center justify-between py-6">
+                <span className="display text-3xl font-normal text-black/60 dark:text-white/60 transition-colors group-hover:text-blue-500 dark:group-hover:text-blue-400 sm:text-4xl">
+                  {nextProject.title}
+                </span>
+                <div className="flex size-12 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/10 transition-colors">
+                  <ArrowRight className="size-4 text-black/60 dark:text-white/60 transition-transform group-hover:translate-x-0.5 group-hover:text-blue-500 dark:group-hover:text-blue-400" />
+                </div>
               </div>
-            </div>
-          </SiteLink>
+            </SiteLink>
+          ) : (
+            <SiteLink
+              to="/work"
+              className="group mt-2 block cursor-pointer"
+              preload="intent"
+            >
+              <div className="flex items-center justify-between py-6">
+                <span className="display text-3xl font-normal text-black/60 dark:text-white/60 transition-colors group-hover:text-blue-500 dark:group-hover:text-blue-400 sm:text-4xl">
+                  All Projects Overview
+                </span>
+                <div className="flex size-12 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/10 transition-colors">
+                  <ArrowRight className="size-4 text-black/60 dark:text-white/60 transition-transform group-hover:translate-x-0.5 group-hover:text-blue-500 dark:group-hover:text-blue-400" />
+                </div>
+              </div>
+            </SiteLink>
+          )}
         </RevealOnScroll>
       </section>
     </PageShell>

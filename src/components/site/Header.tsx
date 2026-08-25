@@ -27,7 +27,7 @@ export function Header() {
       className="flex items-center justify-between w-full py-2"
     >
       {isHome ? (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 group cursor-default">
           <div className="rounded-full w-12 h-12 overflow-hidden bg-white dark:bg-white border border-black/10 dark:border-white/20 flex items-center justify-center shrink-0">
             <motion.img
               src={profile}
@@ -41,7 +41,7 @@ export function Header() {
             />
           </div>
           <div className="flex flex-col">
-            <h1 className="font-display font-medium text-xl italic leading-none text-black dark:text-white">
+            <h1 className="font-display font-medium text-xl italic leading-none text-black dark:text-white group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-150">
               Hitendra S
             </h1>
             <span className="text-sm text-black/70 dark:text-white/70 font-medium font-sans mt-0.5">
@@ -54,7 +54,7 @@ export function Header() {
           {/* Home Button */}
           <SiteLink
             to="/"
-            className="w-7 h-7 bg-transparent hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-200 rounded-full flex items-center justify-center text-black/75 dark:text-white/80 cursor-default outline-none"
+            className="w-7 h-7 bg-transparent hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200 rounded-full flex items-center justify-center text-black/75 dark:text-white/80 cursor-pointer outline-none"
             aria-label="Home page"
           >
             <Home className="size-[13px] -mt-px" />
@@ -64,7 +64,7 @@ export function Header() {
           {/* Back Button */}
           <SiteLink
             to={backPath as "/"}
-            className="w-7 h-7 bg-transparent hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-200 rounded-full flex items-center justify-center text-black/75 dark:text-white/80 cursor-default outline-none"
+            className="w-7 h-7 bg-transparent hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200 rounded-full flex items-center justify-center text-black/75 dark:text-white/80 cursor-pointer outline-none"
             aria-label="Go back"
           >
             <CornerUpLeft className="size-[13px]" />

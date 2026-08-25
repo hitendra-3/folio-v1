@@ -21,25 +21,6 @@ export function SoundControls() {
 
   const toggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
     const nextTheme = theme === "light" ? "dark" : "light";
-    
-    // Top-right theme button fallback coordinates
-    const defaultX = window.innerWidth - 36;
-    const defaultY = 28;
-
-    // Get exact button center from ref or target
-    const btn = themeBtnRef.current || (e.currentTarget as HTMLButtonElement);
-    const rect = btn?.getBoundingClientRect ? btn.getBoundingClientRect() : null;
-
-    let x = defaultX;
-    let y = defaultY;
-
-    if (rect && rect.width > 0 && rect.height > 0 && rect.left > 0 && rect.top >= 0) {
-      x = rect.left + rect.width / 2;
-      y = rect.top + rect.height / 2;
-    } else if (e.clientX && e.clientY && e.clientX > 0 && e.clientY > 0) {
-      x = e.clientX;
-      y = e.clientY;
-    }
 
     const updateTheme = () => {
       setTheme(nextTheme);
@@ -52,11 +33,26 @@ export function SoundControls() {
       }
     };
 
-    if (!document.startViewTransition) {
+    // Check if on a mobile or touch device where full-viewport bitmap snapshots cause lag
+    const isMobile =
+      typeof window !== "undefined" &&
+      (window.innerWidth < 768 ||
+        window.matchMedia("(pointer: coarse)").matches ||
+        "ontouchstart" in window ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+    // On mobile, use instant hardware-accelerated CSS transition (0ms lag, 60/120 FPS smooth)
+    if (isMobile || !document.startViewTransition) {
       updateTheme();
       play("toggle");
       return;
     }
+
+    // On desktop, calculate exact button center for expanding circular view transition
+    const btn = themeBtnRef.current || (e.currentTarget as HTMLButtonElement);
+    const rect = btn?.getBoundingClientRect ? btn.getBoundingClientRect() : null;
+    const x = rect && rect.width > 0 ? rect.left + rect.width / 2 : window.innerWidth - 36;
+    const y = rect && rect.height > 0 ? rect.top + rect.height / 2 : 28;
 
     const endRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
@@ -64,7 +60,7 @@ export function SoundControls() {
     );
 
     const transition = document.startViewTransition(updateTheme);
-    
+
     transition.ready.then(() => {
       document.documentElement.animate(
         {
@@ -74,8 +70,8 @@ export function SoundControls() {
           ],
         },
         {
-          duration: 650, // Victor Williams style smooth 650ms transition
-          easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+          duration: 400, // Responsive, buttery smooth desktop transition
+          easing: "cubic-bezier(0.2, 0, 0, 1)",
           pseudoElement: "::view-transition-new(root)",
         }
       );
@@ -95,7 +91,7 @@ export function SoundControls() {
           setEnabled(!enabled);
         }}
         onMouseEnter={() => play("hover")}
-        className="w-7 h-7 bg-transparent hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-200 rounded-full flex items-center justify-center text-black/75 dark:text-white/80 cursor-default outline-none"
+        className="w-7 h-7 bg-transparent hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200 rounded-full flex items-center justify-center text-black/75 dark:text-white/80 cursor-pointer outline-none"
       >
         {enabled ? <Volume2 className="size-[14px]" /> : <VolumeX className="size-[14px]" />}
       </button>
@@ -114,7 +110,7 @@ export function SoundControls() {
               toggleMusic();
             }}
             onMouseEnter={() => play("hover")}
-            className="flex items-center gap-1.5 overflow-hidden rounded-full px-2 py-1 text-xs text-black/70 dark:text-white/70 hover:bg-black/5 dark:hover:bg-white/10 h-7 transition-colors cursor-default outline-none"
+            className="flex items-center gap-1.5 overflow-hidden rounded-full px-2 py-1 text-xs text-black/70 dark:text-white/70 hover:text-blue-500 dark:hover:text-blue-400 h-7 transition-colors cursor-pointer outline-none"
           >
             {musicPlaying ? <Pause className="size-3" /> : <Play className="size-3" />}
             <span className="flex items-end gap-[2px] h-3.5 items-center">
@@ -145,7 +141,7 @@ export function SoundControls() {
         aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
         onClick={toggleTheme}
         onMouseEnter={() => play("hover")}
-        className="w-7 h-7 bg-transparent hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-200 rounded-full flex items-center justify-center text-black/75 dark:text-white/80 cursor-default outline-none overflow-hidden relative"
+        className="w-7 h-7 bg-transparent hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200 rounded-full flex items-center justify-center text-black/75 dark:text-white/80 cursor-pointer outline-none overflow-hidden relative"
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div

@@ -1,7 +1,16 @@
-import { motion } from "motion/react";
 import { SiteLink } from "./SiteLink";
 import type { CraftItem } from "@/lib/content";
 import { cn } from "@/lib/utils";
+import { Music, Orbit, Activity, Compass, CloudRain, Sparkles, ArrowUpRight } from "lucide-react";
+import { useSound } from "@/lib/sound";
+
+const CRAFT_ICONS: Record<string, any> = {
+  "node-plucker": Music,
+  "gravitational-vortex": Orbit,
+  "acoustic-waveform": Activity,
+  "kinetic-compass": Compass,
+  "pixel-rain": CloudRain,
+};
 
 export type CraftCardProps = {
   item: CraftItem;
@@ -10,50 +19,42 @@ export type CraftCardProps = {
   setHoveredSlug?: (slug: string | null) => void;
 };
 
-export function CraftCard({ item, index, hoveredSlug, setHoveredSlug }: CraftCardProps) {
-  const isOdd = index !== undefined && index % 2 !== 0;
+export function CraftCard({ item, hoveredSlug, setHoveredSlug }: CraftCardProps) {
+  const { play } = useSound();
+  const Icon = CRAFT_ICONS[item.slug] || Sparkles;
   const isDimmed = hoveredSlug !== null && hoveredSlug !== undefined && hoveredSlug !== item.slug;
 
   return (
     <div
-      onMouseEnter={() => setHoveredSlug?.(item.slug)}
+      onMouseEnter={() => {
+        setHoveredSlug?.(item.slug);
+        play("hover");
+      }}
       onMouseLeave={() => setHoveredSlug?.(null)}
       className={cn(
-        "transition-all duration-500",
-        isDimmed ? "blur-[1px] opacity-60 scale-[0.99]" : "opacity-100 scale-100"
+        "transition-all duration-300 py-1 border-b border-black/5 dark:border-white/5 last:border-b-0",
+        isDimmed ? "opacity-30" : "opacity-100"
       )}
     >
       <SiteLink
         to="/craft/$slug"
         params={{ slug: item.slug }}
-        className={cn(
-          "group block cursor-pointer pt-2.5 pb-2.5 md:pt-0",
-          index !== undefined && (isOdd ? "md:pl-2.5" : "md:pr-2.5")
-        )}
-        preload="intent"
+        onClick={() => play("click")}
+        className="group flex items-center justify-between gap-3 py-2 cursor-pointer"
       >
-        <div className="flex flex-col gap-3 w-full p-1 bg-white dark:bg-white/10 border border-black/10 dark:border-white/5 rounded-[10px] hover:border-black/20 dark:hover:border-white/15 transition-colors">
-          <div className="overflow-hidden rounded-md">
-            <motion.img
-              src={item.cover}
-              alt={`${item.title} craft cover`}
-              width={1200}
-              height={800}
-              loading="lazy"
-              className="w-full object-cover aspect-[3/2] bg-black/10 dark:bg-white/10 border border-black/5 dark:border-white/5 transition-transform duration-500 group-hover:scale-[1.015]"
-            />
-          </div>
-          <div className="w-full px-2 pb-4">
-            <div className="flex flex-col gap-1">
-              <span className="text-[15px] leading-6 text-black/80 dark:text-white/80 font-medium font-sans">
-                {item.title}
-              </span>
-              <span className="text-[13px] text-black/50 dark:text-white/50 font-medium font-sans">
-                {item.date}
-              </span>
-            </div>
+        <div className="flex items-center gap-3 min-w-0">
+          <Icon className="size-4 text-black/60 dark:text-white/60 group-hover:text-blue-500 dark:group-hover:text-blue-400 group-hover:scale-110 transition-all duration-200 shrink-0" />
+          <div className="flex items-baseline gap-2 min-w-0 flex-wrap sm:flex-nowrap">
+            <span className="font-medium text-[15px] leading-snug text-black dark:text-white group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-150 shrink-0">
+              {item.title}
+            </span>
+            <span className="text-black/30 dark:text-white/30 text-[13px] font-sans shrink-0">·</span>
+            <span className="text-[14px] leading-snug text-black/60 dark:text-white/60 font-sans truncate max-w-full">
+              {item.note}
+            </span>
           </div>
         </div>
+        <ArrowUpRight className="size-3.5 text-black/30 dark:text-white/30 group-hover:text-blue-500 dark:group-hover:text-blue-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0 ml-1 hidden sm:block" />
       </SiteLink>
     </div>
   );

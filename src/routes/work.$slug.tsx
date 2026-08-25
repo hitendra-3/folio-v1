@@ -66,10 +66,10 @@ function ProjectDetail() {
                     rel="noopener noreferrer"
                     onMouseEnter={() => play("hover")}
                     onClick={() => play("click")}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 transition-colors text-xs font-medium text-foreground cursor-pointer"
+                    className="group inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/5 dark:bg-white/10 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-xs font-medium text-black/80 dark:text-white/80 cursor-pointer"
                   >
-                    <Github className="size-3.5 text-muted-foreground" />
-                    <span>GitHub</span>
+                    <Github className="size-3.5 text-black/60 dark:text-white/60 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors" />
+                    <span className="group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">GitHub</span>
                   </a>
                 </div>
               )}
@@ -99,18 +99,6 @@ function ProjectDetail() {
             </div>
           </Reveal>
         </header>
-
-        <Reveal delay={0.24}>
-          <div className="overflow-hidden rounded-xl border border-border shadow-card">
-            <img
-              src={project.cover}
-              alt={`${project.title} layout screenshot`}
-              width={1280}
-              height={960}
-              className="w-full object-cover aspect-[16/10]"
-            />
-          </div>
-        </Reveal>
 
         <div className="flex flex-col gap-6 w-full">
           <div className="space-y-5 w-full">
@@ -166,11 +154,11 @@ function ProjectDetail() {
             preload="intent"
           >
             <div className="flex items-center justify-between py-6">
-              <span className="display text-3xl font-normal text-muted-foreground transition-colors group-hover:text-foreground sm:text-4xl">
+              <span className="display text-3xl font-normal text-black/60 dark:text-white/60 transition-colors group-hover:text-blue-500 dark:group-hover:text-blue-400 sm:text-4xl">
                 {nextProject.title}
               </span>
-              <div className="flex size-12 items-center justify-center rounded-full border border-border bg-surface transition-colors group-hover:bg-surface-strong">
-                <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
+              <div className="flex size-12 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/10 transition-colors">
+                <ArrowRight className="size-4 text-black/60 dark:text-white/60 transition-transform group-hover:translate-x-0.5 group-hover:text-blue-500 dark:group-hover:text-blue-400" />
               </div>
             </div>
           </SiteLink>

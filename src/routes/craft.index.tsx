@@ -49,10 +49,10 @@ function CraftIndex() {
         </Reveal>
       </div>
 
-      {/* Grid container with sibling hover blurs */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-x-0 gap-y-0">
+      {/* Single-column Minimal List */}
+      <div className="w-full grid grid-cols-1 gap-y-1">
         {craft.map((c, i) => (
-          <RevealOnScroll key={c.slug} delay={i * 0.08}>
+          <RevealOnScroll key={c.slug} delay={i * 0.05}>
             <CraftCard
               item={c}
               index={i}
@@ -67,6 +67,186 @@ function CraftIndex() {
 }
 
 // -----------------------------------------------------------------
+// -----------------------------------------------------------------
+// Craft Component 1: Prism Light Weaver (Interactive Optical Glass Refraction)
+// -----------------------------------------------------------------
+export function PrismLightWeaver() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const mouseRef = useRef<{ x: number; y: number; active: boolean }>({ x: 100, y: 150, active: false });
+  const angleRef = useRef(0);
+  const lastSoundTimeRef = useRef(0);
+
+  const playGlassNote = (freq: number) => {
+    const now = Date.now();
+    if (now - lastSoundTimeRef.current < 100) return;
+    lastSoundTimeRef.current = now;
+
+    try {
+      if (!audioCtxRef.current) {
+        const Ctor = window.AudioContext || (window as any).webkitAudioContext;
+        audioCtxRef.current = new Ctor();
+      }
+      const ctx = audioCtxRef.current;
+      if (ctx.state === "suspended") void ctx.resume();
+
+      const t = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, t);
+
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.linearRampToValueAtTime(0.08, t + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.8);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 0.85);
+    } catch {}
+  };
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+
+    const render = () => {
+      const dpr = window.devicePixelRatio || 1;
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, width, height);
+
+      const isDark = document.documentElement.classList.contains("dark");
+      angleRef.current += 0.003;
+
+      const centerX = width / 2;
+      const centerY = height / 2 + 10;
+      const prismRadius = Math.min(width, height) * 0.22;
+
+      // Draw Glass Prism Triangle
+      const prismAngle = angleRef.current;
+      const p1 = {
+        x: centerX + prismRadius * Math.cos(prismAngle),
+        y: centerY + prismRadius * Math.sin(prismAngle),
+      };
+      const p2 = {
+        x: centerX + prismRadius * Math.cos(prismAngle + (2 * Math.PI) / 3),
+        y: centerY + prismRadius * Math.sin(prismAngle + (2 * Math.PI) / 3),
+      };
+      const p3 = {
+        x: centerX + prismRadius * Math.cos(prismAngle + (4 * Math.PI) / 3),
+        y: centerY + prismRadius * Math.sin(prismAngle + (4 * Math.PI) / 3),
+      };
+
+      // Incident Beam From Mouse
+      const originX = mouseRef.current.active ? mouseRef.current.x : 60;
+      const originY = mouseRef.current.active ? mouseRef.current.y : height / 2;
+
+      // Draw White Incident Laser Beam
+      ctx.beginPath();
+      ctx.moveTo(originX, originY);
+      ctx.lineTo(centerX, centerY);
+      ctx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.95)" : "rgba(15, 23, 42, 0.95)";
+      ctx.lineWidth = 3;
+      ctx.shadowColor = isDark ? "#ffffff" : "#000000";
+      ctx.shadowBlur = 8;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Spectral Rainbow Colors (Red to Violet)
+      const spectrum = [
+        { color: "#ef4444", offset: -0.22, freq: 523.25 }, // C5
+        { color: "#f97316", offset: -0.14, freq: 587.33 }, // D5
+        { color: "#eab308", offset: -0.06, freq: 659.25 }, // E5
+        { color: "#22c55e", offset: 0.02, freq: 698.46 },  // F5
+        { color: "#06b6d4", offset: 0.1, freq: 783.99 },   // G5
+        { color: "#3b82f6", offset: 0.18, freq: 880.00 },  // A5
+        { color: "#a855f7", offset: 0.26, freq: 987.77 },  // B5
+      ];
+
+      // Draw Refracted Spectral Rays
+      spectrum.forEach((spec) => {
+        const rayAngle = Math.atan2(centerY - originY, centerX - originX) + spec.offset + Math.sin(prismAngle) * 0.1;
+        const endX = centerX + Math.cos(rayAngle) * width;
+        const endY = centerY + Math.sin(rayAngle) * height;
+
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(endX, endY);
+        ctx.strokeStyle = spec.color;
+        ctx.lineWidth = 2.5;
+        ctx.globalAlpha = 0.85;
+        ctx.shadowColor = spec.color;
+        ctx.shadowBlur = 10;
+        ctx.stroke();
+      });
+      ctx.globalAlpha = 1.0;
+      ctx.shadowBlur = 0;
+
+      // Render Glass Prism Body
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.lineTo(p3.x, p3.y);
+      ctx.closePath();
+
+      ctx.fillStyle = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)";
+      ctx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.4)" : "rgba(0, 0, 0, 0.3)";
+      ctx.lineWidth = 2;
+      ctx.fill();
+      ctx.stroke();
+
+      // Trigger audio on pointer movement
+      if (mouseRef.current.active) {
+        const noteIdx = Math.floor((mouseRef.current.y / height) * spectrum.length);
+        const validIdx = Math.max(0, Math.min(spectrum.length - 1, noteIdx));
+        playGlassNote(spectrum[validIdx].freq);
+      }
+
+      animId = requestAnimationFrame(render);
+    };
+
+    render();
+    return () => cancelAnimationFrame(animId);
+  }, []);
+
+  const handlePointer = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseRef.current = {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+      active: true,
+    };
+  };
+
+  return (
+    <div className="relative w-full h-[320px] rounded-xl overflow-hidden bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center select-none">
+      <canvas
+        ref={canvasRef}
+        onPointerMove={handlePointer}
+        onPointerDown={handlePointer}
+        onPointerLeave={() => { mouseRef.current.active = false; }}
+        className="w-full h-full cursor-crosshair touch-none"
+      />
+      <div className="absolute bottom-3 left-3 pointer-events-none text-[11px] font-mono text-black/50 dark:text-white/50 bg-white/70 dark:bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-md border border-black/10 dark:border-white/10">
+        Drag pointer to refract light beam through optical glass prism
+      </div>
+    </div>
+  );
+}
+
 // Craft Component 1: Node Plucker (5-String Polyphonic Kinetic Harp)
 // -----------------------------------------------------------------
 export function NodePlucker() {

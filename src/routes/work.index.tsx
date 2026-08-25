@@ -43,14 +43,13 @@ function WorkIndex() {
         </Reveal>
       </div>
 
-      {/* Gap-less Offset Column Grid */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-x-0 gap-y-0">
+      {/* Single-column Minimal List */}
+      <div className="w-full grid grid-cols-1 gap-y-1">
         {projects.map((p, i) => (
-          <RevealOnScroll key={p.slug} delay={i * 0.08}>
+          <RevealOnScroll key={p.slug} delay={i * 0.05}>
             <ProjectCard
               project={p}
               index={i}
-              aspect="4/3"
               hoveredSlug={hoveredSlug}
               setHoveredSlug={setHoveredSlug}
             />

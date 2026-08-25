@@ -55,7 +55,7 @@ function ThoughtDetail() {
                   href={note.mediumUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-black dark:text-white transition-colors duration-150"
+                  className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-black/5 dark:bg-white/10 hover:text-blue-500 dark:hover:text-blue-400 text-black/80 dark:text-white/80 transition-colors duration-150 cursor-pointer"
                 >
                   Read on Medium ↗
                 </a>

@@ -5,6 +5,7 @@ import { Reveal, RevealOnScroll } from "@/components/site/Reveal";
 import { SiteLink } from "@/components/site/SiteLink";
 import { craft } from "@/lib/content";
 import {
+  PrismLightWeaver,
   NodePlucker,
   GravitationalVortex,
   AcousticWaveform,
@@ -14,6 +15,7 @@ import {
 
 // Resolve component based on slug
 const componentsMap: Record<string, React.ComponentType> = {
+  "prism-light-weaver": PrismLightWeaver,
   "node-plucker": NodePlucker,
   "gravitational-vortex": GravitationalVortex,
   "acoustic-waveform": AcousticWaveform,
@@ -119,12 +121,12 @@ function CraftDetail() {
               <SiteLink
                 to="/craft/$slug"
                 params={{ slug: prevCraft.slug }}
-                className="group flex flex-col items-start gap-1 cursor-default text-black/50 dark:text-white/55 hover:text-black/80 dark:hover:text-white/80 transition-colors"
+                className="group flex flex-col items-start gap-1 cursor-pointer transition-colors"
               >
-                <span className="text-[10px] uppercase font-semibold text-black/30 dark:text-white/30 flex items-center gap-1">
+                <span className="text-[10px] uppercase font-semibold text-black/30 dark:text-white/30 flex items-center gap-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
                   <ArrowLeft className="size-3 group-hover:-translate-x-0.5 transition-transform" /> Previous
                 </span>
-                <span className="font-sans font-medium text-black/80 dark:text-white/80">{prevCraft.title}</span>
+                <span className="font-sans font-medium text-black/80 dark:text-white/80 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">{prevCraft.title}</span>
               </SiteLink>
             )}
 
@@ -132,12 +134,12 @@ function CraftDetail() {
               <SiteLink
                 to="/craft/$slug"
                 params={{ slug: nextCraft.slug }}
-                className="group flex flex-col items-end gap-1 cursor-default text-black/50 dark:text-white/55 hover:text-black/80 dark:hover:text-white/80 transition-colors text-right"
+                className="group flex flex-col items-end gap-1 cursor-pointer transition-colors text-right"
               >
-                <span className="text-[10px] uppercase font-semibold text-black/30 dark:text-white/30 flex items-center gap-1">
+                <span className="text-[10px] uppercase font-semibold text-black/30 dark:text-white/30 flex items-center gap-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
                   Next <ArrowRight className="size-3 group-hover:translate-x-0.5 transition-transform" />
                 </span>
-                <span className="font-sans font-medium text-black/80 dark:text-white/80">{nextCraft.title}</span>
+                <span className="font-sans font-medium text-black/80 dark:text-white/80 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">{nextCraft.title}</span>
               </SiteLink>
             )}
           </div>

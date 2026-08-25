@@ -67,7 +67,7 @@ function Index() {
                   className="w-[18px] h-[18px] object-contain mr-[5px] shrink-0"
                 />
               </span>
-              <span className="font-medium text-black/85 dark:text-white/85 group-hover/cmrit:text-black dark:group-hover/cmrit:text-white transition-colors duration-150">
+              <span className="font-medium text-black/85 dark:text-white/85 group-hover/cmrit:text-blue-500 dark:group-hover/cmrit:text-blue-400 transition-colors duration-150">
                 CMRIT
               </span>
             </span>
@@ -86,7 +86,7 @@ function Index() {
             <SiteLink
               to="/work/$slug"
               params={{ slug: "sketch-io" }}
-              className="text-black/85 dark:text-white/85 hover:text-black dark:hover:text-white font-medium underline underline-offset-2 decoration-black/25 dark:decoration-white/25 hover:decoration-black dark:hover:decoration-white transition-colors"
+              className="text-black/85 dark:text-white/85 hover:text-blue-500 dark:hover:text-blue-400 font-medium underline underline-offset-2 decoration-black/25 dark:decoration-white/25 hover:decoration-blue-500 dark:hover:decoration-blue-400 transition-colors"
             >
               Sketch.io
             </SiteLink>
@@ -118,7 +118,7 @@ function Index() {
                 onClick={() => play("click")}
                 whileHover={{ y: -1 }}
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                className="flex items-center gap-1.5 bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 transition-colors duration-200 rounded-full h-8 px-4 text-[13px] leading-[13px] font-medium text-black/80 dark:text-white/80 cursor-default outline-none"
+                className="flex items-center gap-1.5 bg-black/5 dark:bg-white/10 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200 rounded-full h-8 px-4 text-[13px] leading-[13px] font-medium text-black/80 dark:text-white/80 cursor-pointer outline-none"
               >
                 <l.icon className="size-3" />
                 {l.label}
@@ -135,13 +135,12 @@ function Index() {
             <SectionTitle>Work</SectionTitle>
           </div>
         </RevealOnScroll>
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-x-0 gap-y-0">
+        <div className="w-full grid grid-cols-1 gap-y-1">
           {(showWork ? projects : projects.slice(0, 4)).map((p, idx) => (
-            <RevealOnScroll key={p.slug} delay={idx * 0.06}>
+            <RevealOnScroll key={p.slug} delay={idx * 0.05}>
               <ProjectCard
                 project={p}
                 index={idx}
-                aspect="4/3"
                 hoveredSlug={hoveredWork}
                 setHoveredSlug={setHoveredWork}
               />
@@ -153,7 +152,7 @@ function Index() {
             <div className="h-[30px]">
               <button
                 onClick={() => { play("click"); setShowWork((s) => !s); }}
-                className="text-[10px] uppercase leading-[10px] font-semibold text-black/50 dark:text-white/50 cursor-pointer hover:text-black/80 dark:hover:text-white/80 transition-colors duration-200 h-full"
+                className="text-[10px] uppercase leading-[10px] font-semibold text-black/50 dark:text-white/50 cursor-pointer hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200 h-full"
               >
                 {showWork ? "Show less" : "View all"}
               </button>
@@ -168,7 +167,7 @@ function Index() {
           <SectionTitle>Thoughts</SectionTitle>
         </RevealOnScroll>
         <div className="w-full grid grid-cols-1 gap-x-5 gap-y-0">
-          {(showThoughts ? notes : notes.slice(0, 4)).map((n, i) => (
+          {notes.map((n, i) => (
             <RevealOnScroll key={n.slug} delay={i * 0.05}>
               <SiteLink
                 to="/thoughts/$slug"
@@ -176,7 +175,7 @@ function Index() {
                 onMouseEnter={() => { setHoveredNote(n.slug); play("hover"); }}
                 onMouseLeave={() => setHoveredNote(null)}
                 className={[
-                  "block py-2.5 border-b border-black/5 dark:border-white/5 last:border-b-0",
+                  "block py-2.5 border-b border-black/5 dark:border-white/5 last:border-b-0 group",
                   "transition-all duration-300",
                   hoveredNote !== null && hoveredNote !== n.slug
                     ? "opacity-[0.25]"
@@ -187,8 +186,8 @@ function Index() {
                   <span className={[
                     "text-[15px] leading-7 font-medium transition-colors duration-200",
                     hoveredNote === n.slug
-                      ? "text-black dark:text-white"
-                      : "text-black/80 dark:text-white/80",
+                      ? "text-blue-500 dark:text-blue-400"
+                      : "text-black/85 dark:text-white/85 group-hover:text-blue-500 dark:group-hover:text-blue-400",
                   ].join(" ")}>
                     {n.title}
                   </span>
@@ -202,18 +201,6 @@ function Index() {
             </RevealOnScroll>
           ))}
         </div>
-        <RevealOnScroll delay={0.1}>
-          <div className="w-full flex justify-end">
-            <div className="h-[30px]">
-              <button
-                onClick={() => { play("click"); setShowThoughts((s) => !s); }}
-                className="text-[10px] uppercase leading-[10px] font-semibold text-black/50 dark:text-white/50 cursor-pointer hover:text-black/80 dark:hover:text-white/80 transition-colors duration-200 h-full"
-              >
-                {showThoughts ? "Show less" : "View all"}
-              </button>
-            </div>
-          </div>
-        </RevealOnScroll>
       </section>
 
       {/* Craft Grid Section */}
@@ -221,9 +208,9 @@ function Index() {
         <RevealOnScroll>
           <SectionTitle>Craft</SectionTitle>
         </RevealOnScroll>
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-x-0 gap-y-0">
-          {(showCraft ? craft : craft.slice(0, 4)).map((c, idx) => (
-            <RevealOnScroll key={c.slug} delay={idx * 0.06}>
+        <div className="w-full grid grid-cols-1 gap-y-1">
+          {craft.map((c, idx) => (
+            <RevealOnScroll key={c.slug} delay={idx * 0.05}>
               <CraftCard
                 item={c}
                 index={idx}
@@ -233,18 +220,6 @@ function Index() {
             </RevealOnScroll>
           ))}
         </div>
-        <RevealOnScroll delay={0.1}>
-          <div className="w-full flex justify-end">
-            <div className="h-[30px]">
-              <button
-                onClick={() => { play("click"); setShowCraft((s) => !s); }}
-                className="text-[10px] uppercase leading-[10px] font-semibold text-black/50 dark:text-white/50 cursor-pointer hover:text-black/80 dark:hover:text-white/80 transition-colors duration-200 h-full"
-              >
-                {showCraft ? "Show less" : "View all"}
-              </button>
-            </div>
-          </div>
-        </RevealOnScroll>
       </section>
     </PageShell>
   );
